@@ -8,7 +8,7 @@ using SkoButik_Client.Data;
 
 #nullable disable
 
-namespace SkoButik_Client.Data.Migrations
+namespace SkoButik_Client.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
