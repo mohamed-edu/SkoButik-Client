@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using SkoButik_Client.Data;
+using SkoButik_Client.Utility;
 
 namespace SkoButik_Client
 {
@@ -16,9 +18,18 @@ namespace SkoButik_Client
                 options.UseSqlServer(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddDefaultTokenProviders()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+            builder.Services.AddScoped<IEmailSender, EmailSender>();
             builder.Services.AddControllersWithViews();
+            builder.Services.ConfigureApplicationCookie(option =>
+            {
+                option.LoginPath = $"/Identity/account/Login";
+                option.LogoutPath = $"/Identity/account/Logout";
+                option.AccessDeniedPath = $"/Identity/account/AccessDenied";
+            });
+            builder.Services.AddRazorPages();
 
             var app = builder.Build();
 
@@ -39,6 +50,7 @@ namespace SkoButik_Client
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(
