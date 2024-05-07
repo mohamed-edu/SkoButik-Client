@@ -12,8 +12,8 @@ using SkoButik_Client.Data;
 namespace SkoButik_Client.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240507074710_identity")]
-    partial class identity
+    [Migration("20240507090821_1")]
+    partial class _1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
