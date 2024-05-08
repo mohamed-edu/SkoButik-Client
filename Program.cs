@@ -58,7 +58,7 @@ namespace SkoButik_Client
                 pattern: "{controller=Home}/{action=Index}/{id?}");
             app.MapRazorPages();
 
-            // Peter
+  
             app.Run();
         }
     }
