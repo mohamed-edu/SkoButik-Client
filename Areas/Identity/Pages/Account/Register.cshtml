@@ -58,7 +58,7 @@
                 @if (User.IsInRole(SD.Role_Admin))
                 {
                     <select asp-for="Input.Role" asp-items="Model.Input.Rolelist" class="form-select">
-                        <option disabled selected> --select Role--</option>
+                    <option disabled selected> --select Role--</option>
                     </select>
                 }
             </div>

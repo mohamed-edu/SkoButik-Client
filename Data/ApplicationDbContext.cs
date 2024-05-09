@@ -22,8 +22,10 @@ namespace SkoButik_Client.Data
         public DbSet<Product_Brand> ProductBrands { get; set; }
         public DbSet<Cart_Item> Cart_Items { get; set; }
 
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Order_Item>()
