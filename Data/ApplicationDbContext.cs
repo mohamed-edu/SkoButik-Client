@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using SkoButik_Client.Models;
 
 namespace SkoButik_Client.Data
 {
@@ -9,5 +10,7 @@ namespace SkoButik_Client.Data
             : base(options)
         {
         }
+
+        public DbSet<ApplicationUser> ApplicationUsers { get; set; }
     }
 }
