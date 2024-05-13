@@ -21,26 +21,30 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+
+
 using SkoButik_Client.Utility;
+
 using SkoButik_Client.Models;
 
 namespace SkoButik_Client.Areas.Identity.Pages.Account
 {
     public class Register2Model : PageModel
     {
-        private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly IUserStore<IdentityUser> _userStore;
-        private readonly IUserEmailStore<IdentityUser> _emailStore;
+       // private readonly RoleManager<ApplicationUser> _roleManager;
+        private readonly IUserStore<ApplicationUser> _userStore;
+        private readonly IUserEmailStore<ApplicationUser> _emailStore;
         private readonly ILogger<Register2Model> _logger;
         private readonly IEmailSender _emailSender;
 
         public Register2Model(
-            UserManager<IdentityUser> userManager,
+            UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager,
-            IUserStore<IdentityUser> userStore,
-            SignInManager<IdentityUser> signInManager,
+            IUserStore<ApplicationUser> userStore,
+            SignInManager<ApplicationUser> signInManager,
             ILogger<Register2Model> logger,
             IEmailSender emailSender)
         {
@@ -129,6 +133,33 @@ namespace SkoButik_Client.Areas.Identity.Pages.Account
             public string? Role { get; set; }
             [ValidateNever]
             public IEnumerable<SelectListItem> Rolelist { get; set; }
+
+            [StringLength(50, MinimumLength = 2)]
+            [Display(Name = "First Name")]
+            public string FirstName { get; set; }
+
+            [StringLength(50, MinimumLength = 2)]
+            [Display(Name = "Last Name")]
+            public string LastName { get; set; }
+
+            [Phone]
+            [StringLength(13, MinimumLength = 10)]
+            [Display(Name = "Phone number")]
+            public string Phone { get; set; }
+
+            [StringLength(40, MinimumLength = 3)]
+            public string Address { get; set; }
+
+            [StringLength(6, MinimumLength = 5)]
+            [Display(Name = "Zip code")]
+            public string ZipCode { get; set; }
+
+            [StringLength(25, MinimumLength = 5)]
+            public string City { get; set; }
+
+
+
+
         }
 
 
@@ -157,15 +188,20 @@ namespace SkoButik_Client.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
+                //var user = CreateUser();
                 var user = new ApplicationUser
                 {
-                    UserName = Input.Email,
-                    Email = Input.Email,
                     FirstName = Input.FirstName,
                     LastName = Input.LastName,
                     Phone = Input.Phone,
-                    Address = Input.Address
+                    Address = Input.Address,
+                    ZipCode = Input.ZipCode,
+                    City = Input.City
                 };
+
+                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+                await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
@@ -212,27 +248,27 @@ namespace SkoButik_Client.Areas.Identity.Pages.Account
             return Page();
         }
 
-        private IdentityUser CreateUser()
+        private ApplicationUser CreateUser()
         {
             try
             {
-                return Activator.CreateInstance<IdentityUser>();
+                return Activator.CreateInstance<ApplicationUser>();
             }
             catch
             {
-                throw new InvalidOperationException($"Can't create an instance of '{nameof(IdentityUser)}'. " +
-                    $"Ensure that '{nameof(IdentityUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
+                throw new InvalidOperationException($"Can't create an instance of '{nameof(ApplicationUser)}'. " +
+                    $"Ensure that '{nameof(ApplicationUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
                     $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
             }
         }
 
-        private IUserEmailStore<IdentityUser> GetEmailStore()
+        private IUserEmailStore<ApplicationUser> GetEmailStore()
         {
             if (!_userManager.SupportsUserEmail)
             {
                 throw new NotSupportedException("The default UI requires a user store with email support.");
             }
-            return (IUserEmailStore<IdentityUser>)_userStore;
+            return (IUserEmailStore<ApplicationUser>)_userStore;
         }
     }
 }

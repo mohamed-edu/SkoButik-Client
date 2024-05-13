@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SkoButik_Client.Data;
 
@@ -11,9 +12,11 @@ using SkoButik_Client.Data;
 namespace SkoButik_Client.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240513081237_UpdateApplicationUser")]
+    partial class UpdateApplicationUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -157,7 +160,6 @@ namespace SkoButik_Client.Migrations
 
             modelBuilder.Entity("SkoButik_Client.Models.ApplicationUser", b =>
                 {
-
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
@@ -185,8 +187,6 @@ namespace SkoButik_Client.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                   
-
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -196,7 +196,6 @@ namespace SkoButik_Client.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
-
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -252,7 +251,6 @@ namespace SkoButik_Client.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
-
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

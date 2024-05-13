@@ -6,6 +6,7 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using SkoButik_Client.Models;
 
 namespace SkoButik_Client.Areas.Identity.Pages
 {

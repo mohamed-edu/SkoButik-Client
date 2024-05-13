@@ -1,28 +1,35 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
+using System.Net.Sockets;
+
+
 namespace SkoButik_Client.Models
 {
     public class ApplicationUser : IdentityUser
     {
-        [Required]
-        [StringLength(50, MinimumLength = 2, ErrorMessage = "First name must be between 2 and 50 characters")]
-        [Display(Name = "First Name")]
+
+        [StringLength(50, MinimumLength = 2)]
         public string FirstName { get; set; }
 
-        [Required]
-        [StringLength(50, MinimumLength = 2, ErrorMessage = "Last name must be between 2 and 50 characters")]
-        [Display(Name = "Last Name")]
+        [StringLength(50, MinimumLength = 2)]
         public string LastName { get; set; }
 
-        [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 2)]
-        [Display(Name = "Address")]
+        [Phone]
+        [StringLength(13, MinimumLength = 10)]
+        public string Phone { get; set; }
+
+        [StringLength (40, MinimumLength = 3)]
         public string Address { get; set; }
 
-        [Required]
-        [DataType(DataType.PhoneNumber)]
-        [Display(Name = "Phone Number")]
-        public string Phone { get; set; }
+        [StringLength(6, MinimumLength = 5)]
+        public string ZipCode { get; set; }
+
+        [StringLength(25, MinimumLength = 5)]
+        public string City { get; set; }
+      
+
+
+
     }
 }
