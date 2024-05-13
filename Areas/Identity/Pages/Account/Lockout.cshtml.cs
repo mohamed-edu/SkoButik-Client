@@ -4,6 +4,7 @@
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using SkoButik_Client.Models;
 
 namespace SkoButik_Client.Areas.Identity.Pages.Account
 {
