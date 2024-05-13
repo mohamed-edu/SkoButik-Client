@@ -1,11 +1,14 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
+
 using System.Net.Sockets;
+
 
 namespace SkoButik_Client.Models
 {
     public class ApplicationUser : IdentityUser
     {
+
         [StringLength(50, MinimumLength = 2)]
         public string FirstName { get; set; }
 
@@ -25,6 +28,7 @@ namespace SkoButik_Client.Models
         [StringLength(25, MinimumLength = 5)]
         public string City { get; set; }
       
+
 
 
     }

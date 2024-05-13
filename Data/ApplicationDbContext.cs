@@ -10,5 +10,7 @@ namespace SkoButik_Client.Data
             : base(options)
         {
         }
+
+        public DbSet<ApplicationUser> ApplicationUsers { get; set; }
     }
 }
