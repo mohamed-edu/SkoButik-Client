@@ -157,7 +157,6 @@ namespace SkoButik_Client.Migrations
 
             modelBuilder.Entity("SkoButik_Client.Models.ApplicationUser", b =>
                 {
-
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
@@ -185,8 +184,6 @@ namespace SkoButik_Client.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                   
-
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -196,7 +193,6 @@ namespace SkoButik_Client.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
-
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -252,7 +248,82 @@ namespace SkoButik_Client.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
 
+            modelBuilder.Entity("SkoButik_Client.Models.Brand", b =>
+                {
+                    b.Property<int>("BrandId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BrandId"));
+
+                    b.Property<string>("BrandName")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("BrandId");
+
+                    b.ToTable("Brands");
+                });
+
+            modelBuilder.Entity("SkoButik_Client.Models.Product", b =>
+                {
+                    b.Property<int>("ProductId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductId"));
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
+
+                    b.Property<int>("FkBrandId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FkSizeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(5, 2)");
+
+                    b.Property<string>("ProductName")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("ProductId");
+
+                    b.HasIndex("FkBrandId");
+
+                    b.HasIndex("FkSizeId");
+
+                    b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("SkoButik_Client.Models.Size", b =>
+                {
+                    b.Property<int>("SizeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SizeId"));
+
+                    b.Property<string>("SizeName")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("SizeId");
+
+                    b.ToTable("Sizes");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -304,6 +375,35 @@ namespace SkoButik_Client.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("SkoButik_Client.Models.Product", b =>
+                {
+                    b.HasOne("SkoButik_Client.Models.Brand", "Brand")
+                        .WithMany("Products")
+                        .HasForeignKey("FkBrandId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SkoButik_Client.Models.Size", "Size")
+                        .WithMany("Products")
+                        .HasForeignKey("FkSizeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Brand");
+
+                    b.Navigation("Size");
+                });
+
+            modelBuilder.Entity("SkoButik_Client.Models.Brand", b =>
+                {
+                    b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("SkoButik_Client.Models.Size", b =>
+                {
+                    b.Navigation("Products");
                 });
 #pragma warning restore 612, 618
         }
