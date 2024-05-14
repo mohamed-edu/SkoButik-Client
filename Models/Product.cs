@@ -13,7 +13,7 @@ namespace SkoButik_Client.Models
         public int ProductId { get; set; }
 
         [Required]
-        [StringLength(20, MinimumLength = 2, ErrorMessage = "Productname must be between 2 and 20 characters")]
+        [StringLength(50, MinimumLength = 2, ErrorMessage = "Productname must be between 2 and 50 characters")]
         [Display(Name = "Product Name")]
         public string ProductName { get; set; }
 
@@ -21,10 +21,11 @@ namespace SkoButik_Client.Models
         public string? Description { get; set; }
 
         [StringLength (60, MinimumLength = 20 )]
-        public string ImageUrl { get; set; } //ändra till Byte[]???
+        public string? ImageUrl { get; set; } //ändra till Byte[]???
        
-        [Column(TypeName = "decimal(5, 2)")]
+        [Column(TypeName = "decimal(10, 2)")]
         public decimal Price { get; set; }
+
 
 
         //One to many = Size 1---[ Products
