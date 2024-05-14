@@ -19,12 +19,12 @@
             <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
             
             <div class="form-floating mb-3">
-                <input asp-for="Input.FirstName" class="form-control" autocomplete="first-name" aria-required="true" placeholder="first name" />
+                <input asp-for="Input.FirstName" class="form-control" autocomplete="first-name" aria-required="true" placeholder="First name" />
                 <label asp-for="Input.FirstName">First Name</label>
                 <span asp-validation-for="Input.FirstName" class="text-danger"></span>
             </div>
             <div class="form-floating mb-3">
-                <input asp-for="Input.LastName" class="form-control" autocomplete="last-name" aria-required="true" placeholder="last name" />
+                <input asp-for="Input.LastName" class="form-control" autocomplete="last-name" aria-required="true" placeholder="Last name" />
                 <label asp-for="Input.LastName">Last Name</label>
                 <span asp-validation-for="Input.LastName" class="text-danger"></span>
             </div>
@@ -34,31 +34,16 @@
                 <span asp-validation-for="Input.Phone" class="text-danger"></span>
             </div>
             <div class="form-floating mb-3">
-                <input asp-for="Input.FirstName" class="form-control" aria-required="true" placeholder="name@example.com" />
-                <label asp-for="Input.FirstName">First Name</label>
-                <span asp-validation-for="Input.FirstName" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.LastName" class="form-control" aria-required="true" placeholder="name@example.com" />
-                <label asp-for="Input.LastName">Last Name</label>
-                <span asp-validation-for="Input.LastName" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
                 <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
                 <label asp-for="Input.Email">Email</label>
                 <span asp-validation-for="Input.Email" class="text-danger"></span>
             </div>
             <div class="form-floating mb-3">
-
                 <input asp-for="Input.Address" class="form-control" autocomplete="address" aria-required="true" placeholder="Treestreet 47" />
-
-                <input asp-for="Input.Address" class="form-control" aria-required="true" placeholder="name@example.com" />
-
                 <label asp-for="Input.Address">Address</label>
                 <span asp-validation-for="Input.Address" class="text-danger"></span>
             </div>
             <div class="form-floating mb-3">
-
                 <input asp-for="Input.ZipCode" class="form-control" autocomplete="zipcode" aria-required="true" placeholder="824 34" />
                 <label asp-for="Input.ZipCode">Zip code</label>
                 <span asp-validation-for="Input.ZipCode" class="text-danger"></span>
@@ -67,13 +52,7 @@
                 <input asp-for="Input.City" class="form-control" autocomplete="city" aria-required="true" placeholder="Hudiksvall" />
                 <label asp-for="Input.City">City</label>
                 <span asp-validation-for="Input.City" class="text-danger"></span>
-
-                <input asp-for="Input.Phone" class="form-control" aria-required="true" placeholder="name@example.com" />
-                <label asp-for="Input.Phone">Phone</label>
-                <span asp-validation-for="Input.Phone" class="text-danger"></span>
-
             </div>
-
             <div class="form-floating mb-3">
                 <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
                 <label asp-for="Input.Password">Password</label>
@@ -86,11 +65,11 @@
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
            
-                <div class="form-floating mb-3">
+            <div class="form-floating mb-3">
                 @if (User.IsInRole(SD.Role_Admin))
                 {
                     <select asp-for="Input.Role" asp-items="Model.Input.Rolelist" class="form-select">
-                        <option disabled selected> --select Role--</option>
+                        <option disabled selected> --Select Role--</option>
                     </select>
                 }
             </div>
