@@ -35,6 +35,9 @@ namespace SkoButik_Client
 
             var app = builder.Build();
 
+            //seed database
+            AppDbInitializer.Seed(app);
+
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
