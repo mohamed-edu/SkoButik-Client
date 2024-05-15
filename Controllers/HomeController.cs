@@ -15,7 +15,8 @@ namespace SkoButik_Client.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            // Redirect to Index action of MovieController
+            return RedirectToAction("Index", "Products");
         }
 
         public IActionResult Privacy()

@@ -20,15 +20,24 @@ namespace SkoButik_Client.Controllers
             _ordersService = ordersService;
         }
 
-        //får det inte att funka
 
-        // Get all Orders
-        //public async Task<IActionResult> Index()
-        //{
-        //    string userId = "";
-        //    var orders = _ordersService.GetOrdersByUserIdAsync(userId);
-        //    return View(orders);
-        //}
+        //SearchFilter
+        public async Task<IActionResult> Filter(string searchString)
+        {
+            var allProducts = await _context.Products.ToListAsync();
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                var filteredResult = allProducts.Where(n =>
+                    n.ProductName.ToLower().Contains(searchString.ToLower()) ||
+                    n.Description.ToLower().Contains(searchString.ToLower())).ToList();
+
+                return View("Index", filteredResult);
+            }
+
+            return View("Index", allProducts);
+        }
+
 
         public async Task<IActionResult> Index()
         {
