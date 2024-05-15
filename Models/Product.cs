@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Drawing.Drawing2D;
 using System.Drawing;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace SkoButik_Client.Models
 {
@@ -36,7 +37,8 @@ namespace SkoButik_Client.Models
         // One to many = Brand 1---[ Products
         [ForeignKey("Brand")]
         public int FkBrandId { get; set; }
-        public Brand Brand { get; set; }
+        public Brand? Brand { get; set; }
+
 
 
     }

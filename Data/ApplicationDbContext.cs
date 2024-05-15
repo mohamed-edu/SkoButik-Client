@@ -11,9 +11,22 @@ namespace SkoButik_Client.Data
         {
         }
 
+
+        // Product Part
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
         public DbSet<Brand> Brands { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Size> Sizes { get; set; }
+
+
+        //Order Part
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<ShoppingCartItem> ShoppingCartItems { get; set; }
+
+
+
+        //Inventory Part
+
     }
 }

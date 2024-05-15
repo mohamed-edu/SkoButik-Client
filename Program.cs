@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SkoButik_Client.Data;
+using SkoButik_Client.Data.Cart;
+using SkoButik_Client.Data.Services;
 using SkoButik_Client.Models;
 using SkoButik_Client.Utility;
 
@@ -23,6 +25,12 @@ namespace SkoButik_Client
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddDefaultTokenProviders()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            //services configuration
+            builder.Services.AddScoped<IOrdersService, OrdersService>();
+            builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            builder.Services.AddScoped(sc => ShoppingCart.GetShoppingCart(sc));
+            builder.Services.AddSession();
             builder.Services.AddScoped<IEmailSender, EmailSender>();
             builder.Services.AddControllersWithViews();
             builder.Services.ConfigureApplicationCookie(option =>
@@ -53,7 +61,10 @@ namespace SkoButik_Client
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
+
             app.UseRouting();
+            //Useession
+            app.UseSession();
 
             app.UseAuthentication();
             app.UseAuthorization();
@@ -64,8 +75,7 @@ namespace SkoButik_Client
             app.MapRazorPages();
 
             app.Run();
-
-            //Testar 
+ 
         }
     }
 }
