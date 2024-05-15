@@ -75,11 +75,11 @@
 <div class="row">
     @foreach (var item in Model)
     {
-        <div class="col-md-4 col-xs-6 border-primary mb-3" style="color: whitesmoke">
-            <div class="card mb-3" style="max-width: 540px; background-color: #1A2421   ">
-                <div class="row g-0">
+        <div class="col-md-3 col-xs-6 border-primary mb-3" style="color: black;">
+            <div class="card mb-3" style="max-width: 350px; background-color: white">
+                <div class="row g-1">
                     <div class="col-md-12">
-                        <div class="card-header text-white" style="background-color: teal;">
+                        <div class="card-header text-white" style="display: flex; justify-content: center; align-items: center; background-color: teal;">
                             <p class="card-text">
                                 <h5 class="card-title">
                                     @item.ProductName
@@ -92,13 +92,13 @@
                             </p>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                         <img src="@item.ImageUrl" width="100%" alt="@item.ProductName">
                     </div>
                     <div class="col-md-6">
-                        <div class="card-body">
+                        <div class="card-body" >
                             <p class="card-text">@item.Description</p>
-                            <p class="card-text"><b>Category: </b>@item.Brand</p>
+                   @*          <p class="card-text">@item.Brand</p> *@
                         </div>
                     </div>
                     <div class="col-md-12">
@@ -108,7 +108,7 @@
                                    asp-controller="Orders"
                                    asp-action="AddItemToShoppingCart"
                                    asp-route-id="@item.ProductId">
-                                    <i class="bi bi-cart-plus"></i> Add to Cart (Price @item.Price.ToString("c"))
+                                    <i class="bi bi-cart-plus"></i> (Price @item.Price.ToString("c"))
                                 </a>
                                 <a class="btn btn-outline-info float-right" asp-action="Details" asp-route-id="@item.ProductId">
                                     <i class="bi bi-eye-fill"></i> Show Details
