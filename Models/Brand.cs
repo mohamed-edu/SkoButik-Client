@@ -13,6 +13,6 @@ namespace SkoButik_Client.Models
         [DisplayName("Brand")]
         public string BrandName { get; set; }
 
-        public ICollection<Product> Products { get; set; }
+        public ICollection<Product>? Products { get; set; }
     }
 }

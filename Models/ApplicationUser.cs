@@ -29,6 +29,7 @@ namespace SkoButik_Client.Models
         public string City { get; set; }
       
 
+        public virtual ICollection<Order>? Orders { get; set; }
 
 
     }
