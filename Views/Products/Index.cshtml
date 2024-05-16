@@ -1,96 +1,90 @@
-﻿@* @model IEnumerable<SkoButik_Client.Models.Product>
-
-@{
-    ViewData["Title"] = "Index";
-}
-
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.ProductName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ImageUrl)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Price)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Size)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Brand)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.ProductName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ImageUrl)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Size.SizeName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Brand.BrandName)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ProductId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ProductId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ProductId">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
- *@
-
-
- @model IEnumerable<Product>
+﻿ @model IEnumerable<Product>
 
 @{
     ViewData["Title"] = "List of products";
 }
+
+
+<style>
+    /* //List */
+    .center-list {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .list-group {
+        width: 100%; /* Optional: Adjust if you want the list items to take full width */
+    }
+
+    .list-group li a {
+        font-size: 1.4em; /* Increase the text size */
+        color: inherit; /* Inherit color defined in the inline styles */
+        text-decoration: none; /* Remove the underline */
+    }
+
+    .list-group li {
+    }
+
+    /* //Produc cards */
+    .fixed-size-card {
+        height: 570px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 3px;
+    }
+
+    .fixed-size-img {
+        height: 320px;
+        width: 100%;
+        object-fit: cover;
+    }
+
+    .card-body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        flex: 1;
+        text-align: center;
+    }
+
+    .card-footer {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+        .card-footer a {
+            margin: 2px 0;
+        }
+</style>
+
+
 <div class="row">
     <!-- Side filter for brands -->
-    <div class="col-md-3">
-        <h3>Filter by Brand</h3>
-        <ul class="list-group">
-            <li><a asp-action="Index" asp-route-brandId="null">All Products</a></li>
-            <li><a asp-controller="ProductByBrand" asp-action="GetBrand" asp-route-brandName="Nike" style="color: blue;">Nike</a></li>
-            <li><a asp-controller="ProductByBrand" asp-action="GetBrand" asp-route-brandName="Adidas" style="color: red;">Adidas</a></li>
-            <li><a asp-controller="ProductByBrand" asp-action="GetBrand" asp-route-brandName="Puma" style="color: green;">Puma</a></li>
-            <li><a asp-controller="ProductByBrand" asp-action="GetBrand" asp-route-brandName="Vans" style="color: orange;">Vans</a></li>
-        </ul>
+    <div class="col-md-2">
+        <div class="center-list">
+            <h3><i class="bi bi-filter-right"></i>Filter by Brands</h3>
+            <ul class="list-group">
+                <li><a asp-action="Index" asp-route-brandId="null">All Products</a></li>
+                <li><a asp-controller="ProductByBrand" asp-action="GetBrand" asp-route-brandName="Nike" style="color: blue;">Nike</a></li>
+                <li><a asp-controller="ProductByBrand" asp-action="GetBrand" asp-route-brandName="Adidas" style="color: red;">Adidas</a></li>
+                <li><a asp-controller="ProductByBrand" asp-action="GetBrand" asp-route-brandName="Puma" style="color: green;">Puma</a></li>
+                <li><a asp-controller="ProductByBrand" asp-action="GetBrand" asp-route-brandName="Vans" style="color: orange;">Vans</a></li>
+            </ul>
+        </div>
     </div>
 
-    <!-- Product cards -->
     <div class="col-md-9">
         <div class="row">
             @foreach (var item in Model)
             {
                 <div class="col-md-3 col-xs-6 border-primary mb-3" style="color: black;">
-                    <div class="card mb-3" style="max-width: 350px; background-color: white">
+                    <div class="card mb-3 fixed-size-card" style="max-width: 350px; background-color: white">
                         <div class="row g-1">
                             <div class="col-md-12">
                                 <div class="card-header text-white" style="display: flex; justify-content: center; align-items: center; background-color: teal;">
@@ -103,26 +97,26 @@
                                 </div>
                             </div>
                             <div class="col-md-12">
-                                <img src="@item.ImageUrl" width="100%" alt="@item.ProductName">
+                                <img src="@item.ImageUrl" class="fixed-size-img" alt="@item.ProductName">
                             </div>
-                            <div class="col-md-6">
+                         @*    <div class="col-md-6">
+                            </div> *@
+                            <div class="col-md-12">
                                 <div class="card-body">
                                     <p class="card-text">@item.Description</p>
                                 </div>
                             </div>
                             <div class="col-md-12">
-                                <div class="card-footer ">
-                                    <p class="card-text">
-                                        <a class="btn btn-success text-white"
-                                           asp-controller="Orders"
-                                           asp-action="AddItemToShoppingCart"
-                                           asp-route-id="@item.ProductId">
-                                            <i class="bi bi-cart-plus"></i> (Price @item.Price.ToString("c"))
-                                        </a>
-                                        <a class="btn btn-outline-info float-right" asp-action="Details" asp-route-id="@item.ProductId">
-                                            <i class="bi bi-eye-fill"></i> Show Details
-                                        </a>
-                                    </p>
+                                <div class="card-footer">
+                                    <a class="btn btn-success text-white"
+                                       asp-controller="Orders"
+                                       asp-action="AddItemToShoppingCart"
+                                       asp-route-id="@item.ProductId">
+                                        <i class="bi bi-cart-plus"></i> (Price @item.Price.ToString("c"))
+                                    </a>
+                                    <a class="btn btn-outline-info" asp-action="Details" asp-route-id="@item.ProductId">
+                                        <i class="bi bi-eye-fill"></i> Show Details
+                                    </a>
                                 </div>
                             </div>
                         </div>
