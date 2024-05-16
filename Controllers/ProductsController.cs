@@ -43,20 +43,29 @@ namespace SkoButik_Client.Controllers
                 return NotFound();
             }
 
+            ViewBag.Sizes = new SelectList(_context.Sizes, "SizeId", "SizeName", product.FkSizeId);
+
             return View(product);
         }
 
         // GET: Products/Create
         public IActionResult Create()
         {
+            // Create a new instance of the Product class
+            var product = new Product();
+
+            // Set a default image URL
+            product.ImageUrl = "/images/default-image.jpg"; // Replace with your default image URL
+
+            // Populate ViewData for dropdown lists
             ViewData["FkBrandId"] = new SelectList(_context.Brands, "BrandId", "BrandName");
             ViewData["FkSizeId"] = new SelectList(_context.Sizes, "SizeId", "SizeName");
-            return View();
+
+            // Pass the product model to the view
+            return View(product);
         }
 
         // POST: Products/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ProductId,ProductName,Description,ImageUrl,Price,FkSizeId,FkBrandId")] Product product)
@@ -126,6 +135,7 @@ namespace SkoButik_Client.Controllers
             ViewData["FkSizeId"] = new SelectList(_context.Sizes, "SizeId", "SizeName", product.FkSizeId);
             return View(product);
         }
+
 
         // GET: Products/Delete/5
         public async Task<IActionResult> Delete(int? id)

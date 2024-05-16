@@ -1,4 +1,5 @@
 ﻿using SkoButik_Client.Data.Cart;
+using SkoButik_Client.Models;
 
 namespace SkoButik_Client.Data.ViewModels
 {

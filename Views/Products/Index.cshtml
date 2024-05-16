@@ -91,7 +91,15 @@
                                     <p class="card-text">
                                         <h5 class="card-title">
                                             @item.ProductName
-                                            <a class="text-white float-right" asp-action="Edit" asp-route-id="@item.ProductId"><i class="bi bi-pencil-square"></i></a>
+                                            <br />
+                                            @* //Put in User admin role *@
+                                            <div class="d-flex justify-content-center">
+                                                <a class="text-white mx-2" asp-action="Edit" asp-route-id="@item.ProductId"><i class="bi bi-pencil-square"></i></a>
+
+                                                <a class="text-white mx-2" asp-action="Create" asp-route-id="@item.ProductId"><i class="bi bi-hammer"></i></a>
+
+                                                <a class="text-white mx-2" asp-action="Delete" asp-route-id="@item.ProductId"><i class="bi bi-trash3"></i></a>
+                                            </div>
                                         </h5>
                                     </p>
                                 </div>

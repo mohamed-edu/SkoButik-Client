@@ -31,7 +31,7 @@
 
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <a class="dropdown-item" asp-controller="Brands" asp-action="Index"><i class="bi bi-signpost-2" ></i> Brands</a>
-                                <a class="dropdown-item" asp-controller="Sizes" asp-action="Index"><i class="bi bi-rulers"></i></i> Sizes</a>
+                                <a class="dropdown-item" asp-controller="Sizes" asp-action="Index"><i class="bi bi-rulers"></i> Sizes</a>
                             </div>
                         </li>
                         @*                         //--------------------- *@
@@ -82,6 +82,7 @@
         $(document).ready(function () {
             $('.dropdown-toggle').on('click', function () {
                 $(this).next('.dropdown-menu').toggleClass('show');
+
             });
         });
     </script>
