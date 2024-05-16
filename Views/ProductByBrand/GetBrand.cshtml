@@ -1,82 +1,15 @@
-﻿@* @model IEnumerable<SkoButik_Client.Models.Product>
-
-@{
-    ViewData["Title"] = "Index";
-}
-
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.ProductName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ImageUrl)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Price)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Size)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Brand)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.ProductName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ImageUrl)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Size.SizeName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Brand.BrandName)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ProductId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ProductId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ProductId">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
- *@
-
-
- @model IEnumerable<Product>
+﻿ @model IEnumerable<Product>
 
 @{
     ViewData["Title"] = "List of products";
 }
+
 <div class="row">
     <!-- Side filter for brands -->
     <div class="col-md-3">
         <h3>Filter by Brand</h3>
         <ul class="list-group">
-            <li><a asp-action="Index" asp-route-brandId="null">All Products</a></li>
+            <li><a asp-controller="Products" asp-action="Index">All Products</a></li>
             <li><a asp-controller="ProductByBrand" asp-action="GetBrand" asp-route-brandName="Nike" style="color: blue;">Nike</a></li>
             <li><a asp-controller="ProductByBrand" asp-action="GetBrand" asp-route-brandName="Adidas" style="color: red;">Adidas</a></li>
             <li><a asp-controller="ProductByBrand" asp-action="GetBrand" asp-route-brandName="Puma" style="color: green;">Puma</a></li>
@@ -97,7 +30,7 @@
                                     <p class="card-text">
                                         <h5 class="card-title">
                                             @item.ProductName
-                                            <a class="text-white float-right" asp-action="Edit" asp-route-id="@item.ProductId"><i class="bi bi-pencil-square"></i></a>
+                                            <a class="text-white float-right" asp-controller="Products" asp-action="Edit" asp-route-id="@item.ProductId"><i class="bi bi-pencil-square"></i></a>
                                         </h5>
                                     </p>
                                 </div>
@@ -119,7 +52,7 @@
                                            asp-route-id="@item.ProductId">
                                             <i class="bi bi-cart-plus"></i> (Price @item.Price.ToString("c"))
                                         </a>
-                                        <a class="btn btn-outline-info float-right" asp-action="Details" asp-route-id="@item.ProductId">
+                                        <a class="btn btn-outline-info float-right" asp-controller="Products" asp-action="Details" asp-route-id="@item.ProductId">
                                             <i class="bi bi-eye-fill"></i> Show Details
                                         </a>
                                     </p>
