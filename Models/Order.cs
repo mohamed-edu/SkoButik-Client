@@ -10,8 +10,14 @@ namespace SkoButik_Client.Models
 
         [ForeignKey(nameof(UserId))]
         public string UserId { get; set; }
+        public DateTime OrderDate { get; set; } = DateTime.Now;
         public virtual ApplicationUser? ApplicationUser { get; set; }
 
-        public List<OrderItem>? OrderItems { get; set; }
+        public ICollection<OrderItem> OrderItems { get; set; }
+
+        public Order()
+        {
+            OrderItems = new List<OrderItem>();
+        }
     }
 }
