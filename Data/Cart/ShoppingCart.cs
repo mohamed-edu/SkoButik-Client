@@ -73,8 +73,11 @@ namespace SkoButik_Client.Data.Cart
         //Get shopping cart items
         public List<ShoppingCartItem> GetShoppingCartItems()
         {
-            return ShoppingCartitems ?? (ShoppingCartitems = _context.ShoppingCartItems.Where(n => n.ShoppingCartId ==
-            ShoppingCartId).Include(n => n.Product).ToList());
+            return ShoppingCartitems ?? (ShoppingCartitems = _context.ShoppingCartItems
+                .Where(n => n.ShoppingCartId == ShoppingCartId)
+                .Include(n => n.Product)
+                .ThenInclude(p => p.Size) // Include Size navigation property
+                .ToList());
         }
 
         public decimal GetShoppingCartTotal()

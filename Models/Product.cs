@@ -21,7 +21,7 @@ namespace SkoButik_Client.Models
         [StringLength(60, MinimumLength = 10 )]
         public string? Description { get; set; }
 
-        [StringLength (60, MinimumLength = 20 )]
+        [StringLength (60, MinimumLength = 1 )]
         public string? ImageUrl { get; set; } //ändra till Byte[]???
        
         [Column(TypeName = "decimal(10, 2)")]

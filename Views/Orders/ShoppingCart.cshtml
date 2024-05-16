@@ -17,6 +17,7 @@
                 <tr>
                     <th>Selected Amount</th>
                     <th>product</th>
+                    <th>Size</th>
                     <th>Price</th>
                     <th>Subtotal</th>
                     <th></th>
@@ -28,6 +29,7 @@
                     <tr>
                         <td class="align-middle">@item.Amount</td>
                         <td class="align-middle">@item.Product.ProductName</td>
+                        <td class="align-middle">@item.Product.Size.SizeName</td>
                         <td class="align-middle">@item.Product.Price.ToString("c")</td>
                         <td class="align-middle">@((item.Amount * item.Product.Price).ToString("c"))</td>
                         <td class="align-middle">
