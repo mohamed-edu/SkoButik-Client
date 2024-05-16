@@ -42,7 +42,7 @@ namespace SkoButik_Client.Data.Services
                     Price = item.Product.Price
 
                 };
-                _context.OrderItems.AddAsync(orderItem);
+                await _context.OrderItems.AddAsync(orderItem);
             }
             await _context.SaveChangesAsync();
         }

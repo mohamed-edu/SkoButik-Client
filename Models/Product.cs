@@ -40,6 +40,6 @@ namespace SkoButik_Client.Models
         public Brand? Brand { get; set; }
 
 
-
+        //public ICollection<OrderItem> OrderItems { get; set; }
     }
 }
