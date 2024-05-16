@@ -166,5 +166,23 @@ namespace SkoButik_Client.Controllers
         {
             return _context.Products.Any(e => e.ProductId == id);
         }
+
+        // this is for seach bar
+        public async Task<IActionResult> SearchProduct(string searchString)
+        {
+            if (_context.Products == null)
+            {
+                return Problem("Entity set 'MvcProductContext.Products' is null.");
+            }
+
+            var search = from m in _context.Products select m;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                search = search.Where(s => s.ProductName.Contains(searchString) || s.Description.Contains(searchString));
+            }
+
+            return View(await search.ToListAsync());
+        }
     }
 }

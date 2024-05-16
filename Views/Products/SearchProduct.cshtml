@@ -1,0 +1,66 @@
+﻿@model IEnumerable<Product>
+
+@{
+    ViewData["Title"] = "List of products";
+}
+<div class="row">
+    <!-- Side filter for brands -->
+    <div class="col-md-3">
+        <h3>Filter by Brand</h3>
+        <ul class="list-group">
+            <li><a asp-action="Index" asp-route-brandId="null">All Products</a></li>
+            <li><a asp-controller="ProductByBrand" asp-action="GetBrand" asp-route-brandName="Nike" style="color: blue;">Nike</a></li>
+            <li><a asp-controller="ProductByBrand" asp-action="GetBrand" asp-route-brandName="Adidas" style="color: red;">Adidas</a></li>
+            <li><a asp-controller="ProductByBrand" asp-action="GetBrand" asp-route-brandName="Puma" style="color: green;">Puma</a></li>
+            <li><a asp-controller="ProductByBrand" asp-action="GetBrand" asp-route-brandName="Vans" style="color: orange;">Vans</a></li>
+        </ul>
+    </div>
+
+    <!-- Product cards -->
+    <div class="col-md-9">
+        <div class="row">
+            @foreach (var item in Model)
+            {
+                <div class="col-md-3 col-xs-6 border-primary mb-3" style="color: black;">
+                    <div class="card mb-3" style="max-width: 350px; background-color: white">
+                        <div class="row g-1">
+                            <div class="col-md-12">
+                                <div class="card-header text-white" style="display: flex; justify-content: center; align-items: center; background-color: teal;">
+                                    <p class="card-text">
+                                        <h5 class="card-title">
+                                            @item.ProductName
+                                            <a class="text-white float-right" asp-action="Edit" asp-route-id="@item.ProductId"><i class="bi bi-pencil-square"></i></a>
+                                        </h5>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <img src="@item.ImageUrl" width="100%" alt="@item.ProductName">
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card-body">
+                                    <p class="card-text">@item.Description</p>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="card-footer ">
+                                    <p class="card-text">
+                                        <a class="btn btn-success text-white"
+                                           asp-controller="Orders"
+                                           asp-action="AddItemToShoppingCart"
+                                           asp-route-id="@item.ProductId">
+                                            <i class="bi bi-cart-plus"></i> (Price @item.Price.ToString("c"))
+                                        </a>
+                                        <a class="btn btn-outline-info float-right" asp-action="Details" asp-route-id="@item.ProductId">
+                                            <i class="bi bi-eye-fill"></i> Show Details
+                                        </a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
