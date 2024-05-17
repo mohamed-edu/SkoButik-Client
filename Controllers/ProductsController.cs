@@ -180,19 +180,35 @@ namespace SkoButik_Client.Controllers
         // this is for seach bar
         public async Task<IActionResult> SearchProduct(string searchString)
         {
-            if (_context.Products == null)
+            if (_context.Products?.Any() != true)
             {
-                return Problem("Entity set 'MvcProductContext.Products' is null.");
+                return Problem("Entity set 'MvcProductContext.Products' is null or empty.");
             }
 
             var search = from m in _context.Products select m;
 
             if (!String.IsNullOrEmpty(searchString))
             {
-                search = search.Where(s => s.ProductName.Contains(searchString) || s.Description.Contains(searchString));
+                var terms = searchString.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+                if (terms.Length == 1)
+                {
+                    // Search by name or description
+                    search = search.Where(s =>
+                        s.ProductName.Contains(terms[0]) ||
+                        s.Description.Contains(terms[0]));
+                }
+                else if (terms.Length == 2)
+                {
+                    // Search by name or description and size
+                    search = search.Where(s =>
+                        (s.ProductName.Contains(terms[0]) || s.Description.Contains(terms[0])) &&
+                        s.Size.SizeName.Contains(terms[1]));
+                }
             }
 
-            return View(await search.ToListAsync());
+            var productList = await search.ToListAsync();
+            return View(productList);
         }
     }
 }
