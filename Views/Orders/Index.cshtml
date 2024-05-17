@@ -16,44 +16,44 @@
                     <th>Order ID</th>
                     <th>Items</th>
                     <th>Total</th>
-
-                    @*  //DEnna user nedanför *@
-                    <th>User</th>
-                    @*                     @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
-                    {
-                    //lägg in user här
-                    } *@
+                    <th>User ID</th>
+                    <th>First Name</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var order in Model)
+                @if (Model != null)
                 {
-                    <tr>
-                        <td class="align-middle">@order.OrderId</td>
-                        <td class="align-middle">
-                            <ul style="list-style-type:none">
-                                @foreach (var item in order.OrderItems)
-                                {
-                                    <li>
-                                        <div class="alert alert-info" role="alert">
-                                            <span class="badge bg-success">@item.Amount</span> [@item.Price.ToString("c")] - @item.Products.ProductName
-                                        </div>
-                                    </li>
-                                }
-                            </ul>
-                        </td>
-                        <td class="align-middle">
-                            @order.OrderItems.Select(m => m.Products.Price * m.Amount).Sum().ToString("c")
-                        </td>
-                        <td class="align-middle"> @order.UserId </td>
-@*                     @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                    foreach (var order in Model)
                     {
-                  
-                    } *@
-                    </tr>
+                        <tr>
+                            <td class="align-middle">@order.OrderId</td>
+                            <td class="align-middle">
+                                @if (order.OrderItems != null && order.OrderItems.Count > 0)
+                                {
+                                    <ul style="list-style-type:none">
+                                        @foreach (var item in order.OrderItems)
+                                        {
+                                            <li>
+                                                <div class="alert alert-info" role="alert">
+                                                    <span class="badge bg-success">@item.Amount</span> [@item.Price.ToString("c")] - @item.Products?.ProductName
+                                                </div>
+                                            </li>
+                                        }
+                                    </ul>
+                                }
+                            </td>
+                            <td class="align-middle">
+                                @if (order.OrderItems != null && order.OrderItems.Count > 0)
+                                {
+                                    @(order.OrderItems.Sum(m => m.Price * m.Amount).ToString("c"))
+                                }
+                            </td>
+                            <td class="align-middle">@order.UserId</td>
+                            <td class="align-middle">@order.ApplicationUser?.FirstName</td>
+                        </tr>
+                    }
                 }
             </tbody>
         </table>
-
     </div>
 </div>

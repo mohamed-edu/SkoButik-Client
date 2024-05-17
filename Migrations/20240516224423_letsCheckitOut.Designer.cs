@@ -12,8 +12,8 @@ using SkoButik_Client.Data;
 namespace SkoButik_Client.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240516165513_seedingAndCss")]
-    partial class seedingAndCss
+    [Migration("20240516224423_letsCheckitOut")]
+    partial class letsCheckitOut
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

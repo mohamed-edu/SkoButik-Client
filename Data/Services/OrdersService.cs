@@ -12,13 +12,12 @@ namespace SkoButik_Client.Data.Services
         }
         public async Task<List<Order>> GetOrdersByUserIdAsync(string userId)
         {
-            var orders = await _context.Orders
-                .Include(n => n.OrderItems)
-                .ThenInclude(n => n.Products)
-                .Where(n => n.UserId == userId)
+            return await _context.Orders
+                .Where(o => o.UserId == userId)
+                .Include(o => o.ApplicationUser) // Include ApplicationUser to fetch user details
+                .Include(o => o.OrderItems)
+                    .ThenInclude(oi => oi.Products) // Include Products within OrderItems
                 .ToListAsync();
-
-            return orders;
         }
 
         public async Task storeOrderAsync(List<ShoppingCartItem> items, string userId)
