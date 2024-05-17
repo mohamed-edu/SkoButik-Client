@@ -68,7 +68,7 @@
         <div class="center-list">
             <h3><i class="bi bi-filter-right"></i>Filter by Brands</h3>
             <ul class="list-group">
-                <li><a asp-action="Index" asp-route-brandId="null">All Products</a></li>
+                <li><a asp-controller = "Products"  asp-action="Index">All Products</a></li>
                 <li><a asp-controller="ProductByBrand" asp-action="GetBrand" asp-route-brandName="Nike" style="color: blue;">Nike</a></li>
                 <li><a asp-controller="ProductByBrand" asp-action="GetBrand" asp-route-brandName="Adidas" style="color: red;">Adidas</a></li>
                 <li><a asp-controller="ProductByBrand" asp-action="GetBrand" asp-route-brandName="Puma" style="color: green;">Puma</a></li>
