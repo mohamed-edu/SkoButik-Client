@@ -16,7 +16,7 @@
                     <th>Order ID</th>
                     <th>Items</th>
                     <th>Total</th>
-                    <th>User ID</th>
+                    <th>Order date</th>
                     <th>First Name</th>
                 </tr>
             </thead>
@@ -48,7 +48,7 @@
                                     @(order.OrderItems.Sum(m => m.Price * m.Amount).ToString("c"))
                                 }
                             </td>
-                            <td class="align-middle">@order.UserId</td>
+                            <td class="align-middle">@order.OrderDate</td>
                             <td class="align-middle">@order.ApplicationUser?.FirstName</td>
                         </tr>
                     }
