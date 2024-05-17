@@ -5,6 +5,9 @@ using SkoButik_Client.Data;
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 using SkoButik_Client.Data.ViewModels;
+using SkoButik_Client.Models;
+using Newtonsoft.Json.Linq;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace SkoButik_Client.Controllers
 {
@@ -13,6 +16,7 @@ namespace SkoButik_Client.Controllers
         private readonly ShoppingCart _shoppingCart;
         private readonly ApplicationDbContext _context;
         private readonly IOrdersService _ordersService;
+
         public OrdersController(ShoppingCart shoppingCart, ApplicationDbContext context, IOrdersService ordersService)
         {
             _shoppingCart = shoppingCart;
@@ -111,6 +115,111 @@ namespace SkoButik_Client.Controllers
             await _shoppingCart.ClearShoppingCartAsync();
             return View("OrderCompleted");
 
+        }
+
+        //--------------------------------------------------
+
+        // OrderStats
+        public IActionResult OrderStats()
+        {
+            var orderStats = _context.Orders
+                .Include(o => o.OrderItems)
+                .Where(o => o.OrderDate.Date >= DateTime.UtcNow.Date.AddDays(-7)) // Only consider orders from the last 7 days
+                .GroupBy(o => o.OrderDate.Date)
+                .Select(g => new
+                {
+                    OrderDate = g.Key,
+                    OrderCount = g.Count(),
+                    TotalSales = g.SelectMany(o => o.OrderItems).Sum(oi => oi.Amount * oi.Price)
+                })
+                .OrderByDescending(o => o.OrderDate)
+                .ToList()
+                .Select(o => new OrderStatsViewModel
+                {
+                    OrderDate = o.OrderDate,
+                    OrderCount = o.OrderCount,
+                    TotalSales = o.TotalSales
+                })
+                .ToList();
+
+            return View(orderStats);
+        }
+
+        // MostSold
+        public IActionResult MostSold()
+        {
+            var productStats = _context.OrderItems
+                .Include(oi => oi.Products)
+                .Where(oi => oi.Orders.OrderDate.Date >= DateTime.UtcNow.Date.AddDays(-7)) // Only consider orders from the last 7 days
+                .GroupBy(oi => oi.FkProductId)
+                .Select(g => new
+                {
+                    ProductId = g.Key,
+                    ProductName = g.FirstOrDefault().Products.ProductName,
+                    TotalQuantity = g.Sum(oi => oi.Amount),
+                    ImageUrl = g.FirstOrDefault().Products.ImageUrl
+                })
+                .OrderByDescending(p => p.TotalQuantity)
+                .FirstOrDefault();
+
+            var mostSoldProduct = productStats != null ? new ProductStatsViewModel
+            {
+                ProductName = productStats.ProductName,
+                TotalQuantity = productStats.TotalQuantity,
+                ImageUrl = productStats.ImageUrl,
+            } : null;
+
+            return View(mostSoldProduct);
+        }
+
+        public async Task<IActionResult> OrderList(string currency = "SEK")
+        {
+            var orders = await _context.Orders.Include(o => o.OrderItems).ToListAsync();
+            decimal exchangeRate = 1.0m;
+
+            if (currency != "SEK")
+            {
+                using (var client = new HttpClient())
+                {
+                    var response = await client.GetStringAsync($"https://v6.exchangerate-api.com/v6/6e9a8cd53905eb9043c5f0ec/latest/SEK");
+                    var rates = JObject.Parse(response)["conversion_rates"];
+                    exchangeRate = rates[currency].Value<decimal>();
+                }
+            }
+
+            var model = new OrderListViewModel
+            {
+                Orders = orders,
+                SelectedCurrency = currency,
+                ExchangeRate = exchangeRate
+            };
+
+            return View(model);
+        }
+
+        public IActionResult OrderDetails(int id)
+        {
+            var order = _context.Orders
+                .Include(o => o.OrderItems)
+                    .ThenInclude(oi => oi.Products)
+                .Include(o => o.ApplicationUser)
+                .FirstOrDefault(o => o.OrderId == id);
+
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            var totalPrice = order.OrderItems.Sum(oi => oi.Amount * oi.Price);
+
+            var model = new OrderDetailsViewModel
+            {
+                Order = order,
+                OrderedBy = order.ApplicationUser,
+                TotalPrice = totalPrice
+            };
+
+            return View(model);
         }
     }
 }

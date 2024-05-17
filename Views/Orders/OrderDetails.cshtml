@@ -1,0 +1,34 @@
+﻿@model SkoButik_Client.Models.OrderDetailsViewModel
+
+@{
+    ViewData["Title"] = "Order Details";
+}
+
+<h2>Order Details</h2>
+
+<p><strong>Order Number:</strong> @Model.Order.OrderId</p>
+<p><strong>Order Date:</strong> @Model.Order.OrderDate.ToShortDateString()</p>
+<p><strong>Total Price (SEK):</strong> @Model.TotalPrice</p>
+<p><strong>Ordered By:</strong> @Model.OrderedBy.FirstName @Model.OrderedBy.LastName</p>
+
+<h3>Order Items</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Product Name</th>
+            <th>Quantity</th>
+            <th>Price (SEK)</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Order.OrderItems)
+        {
+            <tr>
+                <td>@item.Products.ProductName</td>
+                <td>@item.Amount</td>
+                <td>@(item.Amount * item.Price)</td>
+            </tr>
+        }
+    </tbody>
+</table>

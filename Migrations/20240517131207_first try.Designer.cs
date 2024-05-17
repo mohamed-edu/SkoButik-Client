@@ -12,8 +12,8 @@ using SkoButik_Client.Data;
 namespace SkoButik_Client.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240517095410_Null")]
-    partial class Null
+    [Migration("20240517131207_first try")]
+    partial class firsttry
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

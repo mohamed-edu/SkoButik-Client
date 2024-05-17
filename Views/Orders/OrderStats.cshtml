@@ -1,0 +1,23 @@
+﻿@model IEnumerable<SkoButik_Client.Models.OrderStatsViewModel>
+
+<h2>Order Statistics</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Order Count</th>
+            <th>Total Sales (SEK)</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.OrderDate.ToString("yyyy-MM-dd")</td>
+                <td>@item.OrderCount</td>
+                <td>@item.TotalSales.ToString("0.00")</td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace SkoButik_Client.Migrations
 {
     /// <inheritdoc />
-    public partial class NewMigration : Migration
+    public partial class firsttry : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -240,7 +240,7 @@ namespace SkoButik_Client.Migrations
                     Description = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: true),
                     ImageUrl = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: true),
                     Price = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
-                    CampaignId = table.Column<int>(type: "int", nullable: false),
+                    FkCampaignId = table.Column<int>(type: "int", nullable: false),
                     FkSizeId = table.Column<int>(type: "int", nullable: false),
                     FkBrandId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -254,8 +254,8 @@ namespace SkoButik_Client.Migrations
                         principalColumn: "BrandId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Products_Campaigns_CampaignId",
-                        column: x => x.CampaignId,
+                        name: "FK_Products_Campaigns_FkCampaignId",
+                        column: x => x.FkCampaignId,
                         principalTable: "Campaigns",
                         principalColumn: "CampaignId",
                         onDelete: ReferentialAction.Cascade);
@@ -412,14 +412,14 @@ namespace SkoButik_Client.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Products_CampaignId",
-                table: "Products",
-                column: "CampaignId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Products_FkBrandId",
                 table: "Products",
                 column: "FkBrandId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Products_FkCampaignId",
+                table: "Products",
+                column: "FkCampaignId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_FkSizeId",
