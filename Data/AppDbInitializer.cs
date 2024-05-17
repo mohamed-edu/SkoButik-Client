@@ -21,6 +21,21 @@ namespace SkoButik_Client.Data
                     // Add initial users or do nothing if you want to register users manually
                 }
 
+                if(!context.Campaigns.Any()) 
+                {
+                    context.Campaigns.AddRange(new List<Campaign>()
+                    {
+                        new Campaign()
+                        {
+                            CampaignName = "No Campaign",
+                            CampaignAmount = 0,
+                            StartDate = new DateTime(2022,05,15),
+                            EndDate = new DateTime(2026,06,01)
+    
+                        }
+                    });
+                    context.SaveChanges();
+                }
 
                 //Actors
                 if (!context.Brands.Any())
@@ -113,6 +128,7 @@ namespace SkoButik_Client.Data
                             Description = "White Air Force 1, a classic shoe",
                             FkBrandId = 1,
                             FkSizeId = 1,
+                            FkCampaignId = 1,
                             ImageUrl = "/images/Nike_airforce_low_BlackRed.jpg",
                             Price = 1500.00M
                         },
@@ -122,6 +138,7 @@ namespace SkoButik_Client.Data
                             Description = "White and high",
                             FkBrandId = 1,
                             FkSizeId = 1,
+                            FkCampaignId = 1,
                             ImageUrl = "/images/Nike_airforce_07High_white.jpg",
                             Price = 1699.00M
                         },
@@ -131,6 +148,7 @@ namespace SkoButik_Client.Data
                             Description = "a blue classic style",
                             FkBrandId = 1,
                             FkSizeId = 1,
+                            FkCampaignId = 1,
                             ImageUrl = "/images/Nike_airJordan_retro_blue.jpg",
                             Price = 2000.00M
                         },
@@ -140,6 +158,7 @@ namespace SkoButik_Client.Data
                             Description = "another classic low white",
                             FkBrandId = 1,
                             FkSizeId = 1,
+                            FkCampaignId = 1,
                             ImageUrl = "/images/Nike_smeakers_low_white.jpg",
                             Price = 850.00M
                         },
@@ -149,6 +168,7 @@ namespace SkoButik_Client.Data
                             Description = "White pink, woman model",
                             FkBrandId = 1,
                             FkSizeId = 1,
+                            FkCampaignId = 1,
                             ImageUrl = "/images/Nike_whit_pink.jpg",
                             Price = 900.00M
                         },
@@ -161,6 +181,7 @@ namespace SkoButik_Client.Data
                             Description = "a superstar shoe for a superstar",
                             FkBrandId = 2,
                             FkSizeId = 1,
+                            FkCampaignId = 1,
                             ImageUrl = "/images/Adidas_OrignialSuperstar.jpg",
                             Price = 999.00M
 
@@ -171,6 +192,7 @@ namespace SkoButik_Client.Data
                             Description = "colorful shoe! Woman",
                             FkBrandId = 2,
                             FkSizeId = 1,
+                            FkCampaignId = 1,
                             ImageUrl = "/images/Adidas2.jpg",
                             Price = 1999.00M
 
@@ -181,6 +203,7 @@ namespace SkoButik_Client.Data
                             Description = "Campus black",
                             FkBrandId = 2,
                             FkSizeId = 1,
+                            FkCampaignId = 1,
                             ImageUrl = "/images/Adidas7.jpg",
                             Price = 899.00M
 
@@ -191,6 +214,7 @@ namespace SkoButik_Client.Data
                             Description = "Green and clean",
                             FkBrandId = 2,
                             FkSizeId = 1,
+                            FkCampaignId = 1,
                             ImageUrl = "/images/Adidas1.jpg",
                             Price = 1200.00M
 
@@ -205,6 +229,7 @@ namespace SkoButik_Client.Data
                             Description = "Xray colorful",
                             FkBrandId = 3,
                             FkSizeId = 1,
+                            FkCampaignId = 1,
                             ImageUrl = "/images/Puma_Xray.jpg",
                             Price = 950.00M
                         },
@@ -214,6 +239,7 @@ namespace SkoButik_Client.Data
                             Description = "Red puma shoe for women",
                             FkBrandId = 3,
                             FkSizeId = 1,
+                            FkCampaignId = 1,
                             ImageUrl = "/images/Puma_red_wmn.jpg",
                             Price = 1700.00M
                         },
@@ -223,6 +249,7 @@ namespace SkoButik_Client.Data
                             Description = "Brown street shoe for women",
                             FkBrandId = 3,
                             FkSizeId = 1,
+                            FkCampaignId = 1,
                             ImageUrl = "/images/Puma_brown_wmn.jpg",
                             Price = 950.00M
                         },
@@ -232,6 +259,7 @@ namespace SkoButik_Client.Data
                             Description = "midnight pink like the nightfall",
                             FkBrandId = 3,
                             FkSizeId = 1,
+                            FkCampaignId = 1,
                             ImageUrl = "/images/Puma_midnight_pink.jpg",
                             Price = 950.00M
                         },
@@ -241,6 +269,7 @@ namespace SkoButik_Client.Data
                             Description = "Orange and black puma shoe",
                             FkBrandId = 3,
                             FkSizeId = 1,
+                            FkCampaignId = 1,
                             ImageUrl = "/images/Puma_OrangeBlack.jpg",
                             Price = 950.00M
                         },
@@ -252,6 +281,7 @@ namespace SkoButik_Client.Data
                             Description = "The most bought vans-shoe",
                             FkBrandId = 4,
                             FkSizeId = 1,
+                            FkCampaignId = 1,
                             ImageUrl = "/images/Vans_OldSkool.jpg",
                             Price = 1200.00M
                         },
@@ -261,6 +291,7 @@ namespace SkoButik_Client.Data
                             Description = "skater shoe",
                             FkBrandId = 4,
                             FkSizeId = 1,
+                            FkCampaignId = 1,
                             ImageUrl = "/images/Vans_blu_sk8.jpg",
                             Price = 1250.00M
                         },
@@ -270,6 +301,7 @@ namespace SkoButik_Client.Data
                             Description = "red skater shoe",
                             FkBrandId = 4,
                             FkSizeId = 1,
+                            FkCampaignId = 1,
                             ImageUrl = "/images/Vans4.jpg",
                             Price = 1400.00M
                         },
@@ -279,6 +311,7 @@ namespace SkoButik_Client.Data
                             Description = "sk8 high, brown",
                             FkBrandId = 4,
                             FkSizeId = 1,
+                            FkCampaignId = 1,
                             ImageUrl = "/images/VansSk8_High.jpg",
                             Price = 2000.00M
                         }

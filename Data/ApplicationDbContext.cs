@@ -17,6 +17,7 @@ namespace SkoButik_Client.Data
         public DbSet<Brand> Brands { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Size> Sizes { get; set; }
+        public DbSet<Campaign> Campaigns { get; set; }
 
 
         //Order Part
@@ -25,7 +26,7 @@ namespace SkoButik_Client.Data
         public DbSet<ShoppingCartItem> ShoppingCartItems { get; set; }
 
         //Inventory Part
-
+        public DbSet<Inventory> Inventory { get; set; }
 
         //modelBuilder
         protected override void OnModelCreating(ModelBuilder modelBuilder)

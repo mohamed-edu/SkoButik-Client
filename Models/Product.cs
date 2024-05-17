@@ -27,7 +27,10 @@ namespace SkoButik_Client.Models
         [Column(TypeName = "decimal(10, 2)")]
         public decimal Price { get; set; }
 
-
+        // One to many = Campaign 1---[ Products
+        [ForeignKey("Campaign")]
+        public int FkCampaignId { get; set; }
+        public Campaign? Campaign { get; set; } = null;
 
         //One to many = Size 1---[ Products
         [ForeignKey("Size")]
@@ -39,7 +42,9 @@ namespace SkoButik_Client.Models
         public int FkBrandId { get; set; }
         public Brand? Brand { get; set; }
 
+        public ICollection<Inventory>? Inventory { get; set; }
 
-        //public ICollection<OrderItem> OrderItems { get; set; }
+
+        public ICollection<OrderItem> OrderItems { get; set; }
     }
 }
