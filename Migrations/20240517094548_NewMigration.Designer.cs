@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SkoButik_Client.Data;
 
@@ -11,9 +12,11 @@ using SkoButik_Client.Data;
 namespace SkoButik_Client.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240517094548_NewMigration")]
+    partial class NewMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -385,14 +388,14 @@ namespace SkoButik_Client.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductId"));
 
+                    b.Property<int>("CampaignId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .HasMaxLength(60)
                         .HasColumnType("nvarchar(60)");
 
                     b.Property<int>("FkBrandId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("FkCampaignId")
                         .HasColumnType("int");
 
                     b.Property<int>("FkSizeId")
@@ -412,9 +415,9 @@ namespace SkoButik_Client.Migrations
 
                     b.HasKey("ProductId");
 
-                    b.HasIndex("FkBrandId");
+                    b.HasIndex("CampaignId");
 
-                    b.HasIndex("FkCampaignId");
+                    b.HasIndex("FkBrandId");
 
                     b.HasIndex("FkSizeId");
 
@@ -566,15 +569,15 @@ namespace SkoButik_Client.Migrations
 
             modelBuilder.Entity("SkoButik_Client.Models.Product", b =>
                 {
-                    b.HasOne("SkoButik_Client.Models.Brand", "Brand")
+                    b.HasOne("SkoButik_Client.Models.Campaign", "Campaign")
                         .WithMany("Products")
-                        .HasForeignKey("FkBrandId")
+                        .HasForeignKey("CampaignId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SkoButik_Client.Models.Campaign", "Campaign")
+                    b.HasOne("SkoButik_Client.Models.Brand", "Brand")
                         .WithMany("Products")
-                        .HasForeignKey("FkCampaignId")
+                        .HasForeignKey("FkBrandId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
