@@ -41,21 +41,30 @@ namespace SkoButik_Client.Controllers
 
         public async Task<IActionResult> Index()
         {
-            // Get the current user's id
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            // Call the service method with the userId
             var orders = await _ordersService.GetOrdersByUserIdAsync(userId);
 
-            return View(orders.ToList());
+            foreach (var order in orders)
+            {
+                Console.WriteLine($"OrderID: {order.OrderId}, UserID: {order.UserId}, FirstName: {order.ApplicationUser?.FirstName}");
+                Console.WriteLine($"OrderItems Count: {order.OrderItems.Count}");
+                foreach (var item in order.OrderItems)
+                {
+                    Console.WriteLine($"ProductName: {item.Products?.ProductName}, Price: {item.Price}, Amount: {item.Amount}");
+                }
+            }
+
+            return View(orders);
         }
+    
 
 
-        //__________________________________________________________________________
+
+    //__________________________________________________________________________
 
 
-        // Shopping Cart
-        public IActionResult ShoppingCart()
+    // Shopping Cart
+    public IActionResult ShoppingCart()
         {
             var items = _shoppingCart.GetShoppingCartItems();
             _shoppingCart.ShoppingCartitems = items;

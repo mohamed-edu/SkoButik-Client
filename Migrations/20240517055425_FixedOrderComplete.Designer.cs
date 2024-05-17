@@ -12,8 +12,8 @@ using SkoButik_Client.Data;
 namespace SkoButik_Client.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240516223916_Cssupdate4ProductViews")]
-    partial class Cssupdate4ProductViews
+    [Migration("20240517055425_FixedOrderComplete")]
+    partial class FixedOrderComplete
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -287,11 +287,13 @@ namespace SkoButik_Client.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("OrderId");
 
                     b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Orders");
                 });
@@ -313,20 +315,14 @@ namespace SkoButik_Client.Migrations
                     b.Property<int>("FkProductId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("OrdersOrderId")
-                        .HasColumnType("int");
-
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(10, 2)");
 
-                    b.Property<int?>("ProductsProductId")
-                        .HasColumnType("int");
-
                     b.HasKey("OrderItemId");
 
-                    b.HasIndex("OrdersOrderId");
+                    b.HasIndex("FkOrderId");
 
-                    b.HasIndex("ProductsProductId");
+                    b.HasIndex("FkProductId");
 
                     b.ToTable("OrderItems");
                 });
@@ -466,9 +462,15 @@ namespace SkoButik_Client.Migrations
 
             modelBuilder.Entity("SkoButik_Client.Models.Order", b =>
                 {
-                    b.HasOne("SkoButik_Client.Models.ApplicationUser", "ApplicationUser")
+                    b.HasOne("SkoButik_Client.Models.ApplicationUser", null)
                         .WithMany("Orders")
                         .HasForeignKey("ApplicationUserId");
+
+                    b.HasOne("SkoButik_Client.Models.ApplicationUser", "ApplicationUser")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("ApplicationUser");
                 });
@@ -477,11 +479,15 @@ namespace SkoButik_Client.Migrations
                 {
                     b.HasOne("SkoButik_Client.Models.Order", "Orders")
                         .WithMany("OrderItems")
-                        .HasForeignKey("OrdersOrderId");
+                        .HasForeignKey("FkOrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("SkoButik_Client.Models.Product", "Products")
                         .WithMany()
-                        .HasForeignKey("ProductsProductId");
+                        .HasForeignKey("FkProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Orders");
 
