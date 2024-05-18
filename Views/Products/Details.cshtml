@@ -25,7 +25,7 @@
                         <p class="card-text">@Model.Description</p>
                         <p class="card-text">
                             <b>Size: </b>
-                            <select class="form-select" asp-for="FkSizeId" asp-items="@ViewBag.Sizes">
+                            <select class="form-select" id="sizeSelect" asp-for="FkSizeId" asp-items="@ViewBag.Sizes">
                                 <option value="">-- Select Size --</option>
                             </select>
                         </p>
@@ -33,7 +33,7 @@
                             <b>Brand: </b>
                             @Model.Brand.BrandName
                         </p>
-                        <p class="card-text"><b>Price: </b>@Model.Price.ToString("c")</p>
+                        <p class="card-text" id="priceDisplay"><b>Price: </b>@Model.Price.ToString("c")</p>
                     </div>
                 </div>
                 <div class="col-md-12">
@@ -42,154 +42,44 @@
                             <a class="btn btn-outline-primary float-right" asp-action="Index">
                                 Back to List
                             </a>
-                            <a class="btn btn-success text-white"
+                            <a class="btn btn-success text-white" id="addToCartBtn"
                                asp-controller="Orders"
-                               asp-action="AddItemToShoppingCart" asp-route-id="@Model.ProductId"><i class="bi bi-cart-plus"></i> Add to Cart</a>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-
-
-@* //size Select almost working *@
-@* <div class="row">
-    <div class="col-md-8 offset-2">
-        <div class="card mb-2 mx-auto" style="max-width: 620px;">
-            <div class="row g-0">
-                <div class="col-md-12">
-                    <div class="card-header text-white bg-info">
-                        <p class="card-text">
-                            <h5 class="card-title">
-                                @Model.ProductName
-                            </h5>
-                        </p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <img src="@Model.ImageUrl" width="100%" alt="@Model.ProductName">
-                </div>
-                <div class="col-md-8">
-                    <div class="card-body">
-                        <p class="card-text">@Model.Description</p>
-                        <p class="card-text">
-                            <b>Size: </b>
-                            <select class="form-select" asp-for="FkSizeId" asp-items="@ViewBag.Sizes">
-                                <option value="">-- Select Size --</option>
-                            </select>
-                        </p>
-                        <p class="card-text">
-                            <b>Brand: </b>
-                            @Model.Brand.BrandName
-                        </p>
-                        <p class="card-text"><b>Price: </b>@Model.Price.ToString("c")</p>
-                    </div>
-                </div>
-                <div class="col-md-12">
-                    <div class="card-footer">
-                        <p class="card-text">
-                            <a class="btn btn-outline-primary float-right" asp-action="Index">
-                                Back to List
-                            </a>
-                            <a class="btn btn-success text-white"
-                               asp-controller="Orders"
-                               asp-action="AddItemToShoppingCart" asp-route-id="@Model.ProductId"><i class="bi bi-cart-plus"></i> Add to Cart</a>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div> *@
-
-
-@* //modal no size select *@
-
-@* <div class="row">
-    <div class="col-md-8 offset-2">
-        <div class="card mb-2 mx-auto" style="max-width: 540px;">
-            <div class="row g-0">
-                <div class="col-md-12">
-                    <div class="card-header text-white bg-info">
-                        <p class="card-text">
-                            <h5 class="card-title">
-                                @Model.ProductName
-                            </h5>
-                        </p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <img src="@Model.ImageUrl" width="100%" alt="@Model.ProductName" id="productImage" onclick="displayEnlargedImage()" style="cursor: pointer;">
-                </div>
-                <div class="col-md-8">
-                    <div class="card-body">
-                        <p class="card-text">@Model.Description</p>
-                        <p class="card-text">
-                            <b>Size: </b>
-                            <a asp-controller="Sizes" asp-action="Details" asp-route-id="@Model.FkSizeId">
-                                @Model.Size.SizeName
+                               asp-action="AddItemToShoppingCart"
+                               asp-route-id="@Model.ProductId">
+                                <i class="bi bi-cart-plus"></i> Add to Cart
                             </a>
                         </p>
-                        <p class="card-text">
-                            <b>Brand: </b>
-                            <a asp-controller="Brands" asp-action="Details" asp-route-id="@Model.FkBrandId">
-                                @Model.Brand.BrandName
-                            </a>
-                        </p>
-                        <p class="card-text"><b>Price: </b>@Model.Price.ToString("c")</p>
                     </div>
                 </div>
-                <div class="col-md-12">
-                    <div class="card-footer">
-                        <p class="card-text">
-                            <a class="btn btn-outline-primary float-right" asp-action="Index">
-                                Back to List
-                            </a>
-                            <a class="btn btn-success text-white"
-                               asp-controller="Orders"
-                               asp-action="AddItemToShoppingCart" asp-route-id="@Model.ProductId"><i class="bi bi-cart-plus"></i> Add to Cart</a>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal -->
-<div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-body">
-                <img src="" class="img-fluid" alt="" id="enlargedImage">
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" id="closeModal">Close</button>
             </div>
         </div>
     </div>
 </div>
 
 @section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        // Function to display enlarged image
-        function displayEnlargedImage() {
-            var imageUrl = document.getElementById("productImage").src;
-            var modalImage = document.getElementById("enlargedImage");
-            modalImage.src = imageUrl;
-            $('#imageModal').modal('show');
-        }
-
-        // Function to close the modal
         $(document).ready(function () {
-            $('#closeModal').click(function () {
-                $('#imageModal').modal('hide');
+            $('#sizeSelect').change(function () {
+                var sizeId = $(this).val();
+                var productId = '@Model.ProductId';
+
+                $.ajax({
+                    url: '/Products/UpdateProductSize',
+                    type: 'POST',
+                    data: { productId: productId, sizeId: sizeId },
+                    success: function (response) {
+                        if (response.success) {
+                            // Optionally update the price or other details if needed
+                        } else {
+                            alert('Error updating product size: ' + response.message);
+                        }
+                    },
+                    error: function () {
+                        alert('Error updating product size');
+                    }
+                });
             });
         });
     </script>
 }
- *@

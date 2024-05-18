@@ -22,7 +22,7 @@ namespace SkoButik_Client.Controllers
         // GET: Products
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Products.Include(p => p.Brand).Include(p => p.Size);
+            var applicationDbContext = _context.Products.Include(p => p.Brand).Include(p => p.Size).Include(p => p.Campaign);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -38,6 +38,7 @@ namespace SkoButik_Client.Controllers
                 .Include(p => p.Brand)
                 .Include(p => p.Size)
                 .FirstOrDefaultAsync(m => m.ProductId == id);
+
             if (product == null)
             {
                 return NotFound();
@@ -48,8 +49,35 @@ namespace SkoButik_Client.Controllers
             return View(product);
         }
 
-        // GET: Products/Create
-        public IActionResult Create()
+        // POST: Products/UpdateProductSize
+        [HttpPost]
+        public async Task<IActionResult> UpdateProductSize(int productId, int sizeId)
+        {
+            var product = await _context.Products.FindAsync(productId);
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            product.FkSizeId = sizeId;
+
+            try
+            {
+                _context.Update(product);
+                await _context.SaveChangesAsync();
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+    
+
+
+    // GET: Products/Create
+    public IActionResult Create()
         {
             // Create a new instance of the Product class
             var product = new Product();
@@ -60,6 +88,7 @@ namespace SkoButik_Client.Controllers
             // Populate ViewData for dropdown lists
             ViewData["FkBrandId"] = new SelectList(_context.Brands, "BrandId", "BrandName");
             ViewData["FkSizeId"] = new SelectList(_context.Sizes, "SizeId", "SizeName");
+            ViewData["FkCampaignId"] = new SelectList(_context.Campaigns, "CampaignId", "CampaignName", product.FkCampaignId);
 
             // Pass the product model to the view
             return View(product);
@@ -68,7 +97,7 @@ namespace SkoButik_Client.Controllers
         // POST: Products/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ProductId,ProductName,Description,ImageUrl,Price,FkSizeId,FkBrandId")] Product product)
+        public async Task<IActionResult> Create([Bind("ProductId,ProductName,Description,ImageUrl,Price,FkSizeId,FkBrandId,FkCampaignId")] Product product)
         {
             if (ModelState.IsValid)
             {
@@ -78,6 +107,7 @@ namespace SkoButik_Client.Controllers
             }
             ViewData["FkBrandId"] = new SelectList(_context.Brands, "BrandId", "BrandName", product.FkBrandId);
             ViewData["FkSizeId"] = new SelectList(_context.Sizes, "SizeId", "SizeName", product.FkSizeId);
+            ViewData["FkCampaignId"] = new SelectList(_context.Campaigns, "CampaignId", "CampaignName", product.FkCampaignId);
             return View(product);
         }
 
@@ -96,6 +126,7 @@ namespace SkoButik_Client.Controllers
             }
             ViewData["FkBrandId"] = new SelectList(_context.Brands, "BrandId", "BrandName", product.FkBrandId);
             ViewData["FkSizeId"] = new SelectList(_context.Sizes, "SizeId", "SizeName", product.FkSizeId);
+            ViewData["FkCampaignId"] = new SelectList(_context.Campaigns, "CampaignId", "CampaignName", product.FkCampaignId);
             return View(product);
         }
 
@@ -104,7 +135,7 @@ namespace SkoButik_Client.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ProductId,ProductName,Description,ImageUrl,Price,FkSizeId,FkBrandId")] Product product)
+        public async Task<IActionResult> Edit(int id, [Bind("ProductId,ProductName,Description,ImageUrl,Price,FkSizeId,FkBrandId, FkCampaignId")] Product product)
         {
             if (id != product.ProductId)
             {
@@ -133,6 +164,7 @@ namespace SkoButik_Client.Controllers
             }
             ViewData["FkBrandId"] = new SelectList(_context.Brands, "BrandId", "BrandName", product.FkBrandId);
             ViewData["FkSizeId"] = new SelectList(_context.Sizes, "SizeId", "SizeName", product.FkSizeId);
+            ViewData["FkCampaignId"] = new SelectList(_context.Campaigns, "CampaignId", "CampaignName", product.FkCampaignId);
             return View(product);
         }
 
@@ -148,6 +180,7 @@ namespace SkoButik_Client.Controllers
             var product = await _context.Products
                 .Include(p => p.Brand)
                 .Include(p => p.Size)
+                .Include(p => p.Campaign)
                 .FirstOrDefaultAsync(m => m.ProductId == id);
             if (product == null)
             {

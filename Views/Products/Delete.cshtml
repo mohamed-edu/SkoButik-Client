@@ -54,6 +54,12 @@
             <dd class="col-sm-10">
                 @Html.DisplayFor(model => model.Brand.BrandName)
             </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Campaign)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Campaign.CampaignName)
+            </dd>
         </dl>
 
         <form asp-action="Delete">

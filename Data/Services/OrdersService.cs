@@ -16,7 +16,7 @@ namespace SkoButik_Client.Data.Services
                 .Where(o => o.UserId == userId)
                 .Include(o => o.ApplicationUser) // Include ApplicationUser to fetch user details
                 .Include(o => o.OrderItems)
-                    .ThenInclude(oi => oi.Products) // Include Products within OrderItems
+                .ThenInclude(oi => oi.Products) // Include Products within OrderItems
                 .ToListAsync();
         }
 

@@ -42,6 +42,7 @@ namespace SkoButik_Client.Controllers
             return View("Index", allProducts);
         }
 
+        ///________________________________________________________________________________
 
         public async Task<IActionResult> Index()
         {
@@ -104,9 +105,15 @@ namespace SkoButik_Client.Controllers
             return RedirectToAction(nameof(ShoppingCart));
         }
 
+
+
         // CompleteOrder
         public async Task<IActionResult> CompleteOrder()
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("NotLoggedIn");
+            }
             var items = _shoppingCart.GetShoppingCartItems().ToList();
 
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -117,7 +124,13 @@ namespace SkoButik_Client.Controllers
 
         }
 
-        //--------------------------------------------------
+        // Action for NotLoggedIn view
+        public IActionResult NotLoggedIn()
+        {
+            return View();
+        }
+
+        //_______________________________________________________________________
 
         // OrderStats
         public IActionResult OrderStats()

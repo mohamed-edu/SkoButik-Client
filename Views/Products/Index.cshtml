@@ -29,7 +29,7 @@
 
     /* //Produc cards */
     .fixed-size-card {
-        height: 600px;
+        height: 570px;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
@@ -44,11 +44,14 @@
 
     .card-body {
         display: flex;
+        height: 70px;
         justify-content: center;
         align-items: center;
         flex-direction: column;
         flex: 1;
         text-align: center;
+ 
+
     }
 
     .card-footer {
@@ -56,6 +59,7 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
+        background-color: white;
     }
 
         .card-footer a {
@@ -87,18 +91,18 @@
                     <div class="card mb-3 fixed-size-card" style="max-width: 350px; background-color: white">
                         <div class="row g-1">
                             <div class="col-md-12">
-                                <div class="card-header text-white" style="display: flex; justify-content: center; align-items: center; background-color: teal;">
+                                <div class="card-header text-dark" style="display: flex; justify-content: center; align-items: center; background-color: white;">
                                     <p class="card-text">
                                         <h5 class="card-title">
                                             @item.ProductName
                                             <br />
                                             @* //Put in User admin role *@
                                             <div class="d-flex justify-content-center">
-                                                <a class="text-white mx-2" asp-action="Edit" asp-route-id="@item.ProductId"><i class="bi bi-pencil-square"></i></a>
+                                                <a class="text-white mx-2" asp-action="Edit" asp-route-id="@item.ProductId"><i class="bi bi-pencil-square" style="color: orange"></i></a>
 
-                                                <a class="text-white mx-2" asp-action="Create" asp-route-id="@item.ProductId"><i class="bi bi-hammer"></i></a>
+                                                <a class="text-white mx-2" asp-action="Create" asp-route-id="@item.ProductId"><i class="bi bi-hammer" style="color: orange"></i></a>
 
-                                                <a class="text-white mx-2" asp-action="Delete" asp-route-id="@item.ProductId"><i class="bi bi-trash3"></i></a>
+                                                <a class="text-white mx-2" asp-action="Delete" asp-route-id="@item.ProductId"><i class="bi bi-trash3" style="color: orange"></i></a>
                                             </div>
                                         </h5>
                                     </p>
@@ -116,12 +120,9 @@
                             </div>
                             <div class="col-md-12">
                                 <div class="card-footer">
-                                    <a class="btn btn-success text-white"
-                                       asp-controller="Orders"
-                                       asp-action="AddItemToShoppingCart"
-                                       asp-route-id="@item.ProductId">
-                                        <i class="bi bi-cart-plus"></i> (Price @item.Price.ToString("c"))
-                                    </a>
+                                    <div class="text">
+                                        Price @item.Price.ToString("c")
+                                    </div>
                                     <a class="btn btn-outline-info" asp-action="Details" asp-route-id="@item.ProductId">
                                         <i class="bi bi-eye-fill"></i> Show Details
                                     </a>
