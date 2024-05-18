@@ -66,12 +66,13 @@
             </div>
            
             <div class="form-floating mb-3">
-                @if (User.IsInRole(SD.Role_Admin))
+                <select asp-for="Input.Role" asp-items="Model.Input.Rolelist" class="form-select">
+                    <option disabled selected> --Select Role--</option>
+                </select>
+@*                 @if (User.IsInRole(SD.Role_Admin))
                 {
-                    <select asp-for="Input.Role" asp-items="Model.Input.Rolelist" class="form-select">
-                        <option disabled selected> --Select Role--</option>
-                    </select>
-                }
+                   //put Select Role in here
+                } *@
             </div>
             
             <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
