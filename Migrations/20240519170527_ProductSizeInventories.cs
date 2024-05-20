@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace SkoButik_Client.Migrations
 {
     /// <inheritdoc />
-    public partial class Almost : Migration
+    public partial class ProductSizeInventories : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -268,26 +268,6 @@ namespace SkoButik_Client.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Inventory",
-                columns: table => new
-                {
-                    InventoryId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    QuantityInStock = table.Column<int>(type: "int", nullable: false),
-                    ProductId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Inventory", x => x.InventoryId);
-                    table.ForeignKey(
-                        name: "FK_Inventory_Products_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "Products",
-                        principalColumn: "ProductId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "OrderItems",
                 columns: table => new
                 {
@@ -297,6 +277,7 @@ namespace SkoButik_Client.Migrations
                     Price = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     FkProductId = table.Column<int>(type: "int", nullable: false),
                     FkOrderId = table.Column<int>(type: "int", nullable: false),
+                    FkSizeId = table.Column<int>(type: "int", nullable: false),
                     ProductId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -313,12 +294,43 @@ namespace SkoButik_Client.Migrations
                         column: x => x.FkProductId,
                         principalTable: "Products",
                         principalColumn: "ProductId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_OrderItems_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "ProductId");
+                    table.ForeignKey(
+                        name: "FK_OrderItems_Sizes_FkSizeId",
+                        column: x => x.FkSizeId,
+                        principalTable: "Sizes",
+                        principalColumn: "SizeId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProductSizeInventories",
+                columns: table => new
+                {
+                    ProductSizeInventoryId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FkProductId = table.Column<int>(type: "int", nullable: false),
+                    FkSizeId = table.Column<int>(type: "int", nullable: false),
+                    QuantityInStock = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductSizeInventories", x => x.ProductSizeInventoryId);
+                    table.ForeignKey(
+                        name: "FK_ProductSizeInventories_Products_FkProductId",
+                        column: x => x.FkProductId,
+                        principalTable: "Products",
+                        principalColumn: "ProductId");
+                    table.ForeignKey(
+                        name: "FK_ProductSizeInventories_Sizes_FkSizeId",
+                        column: x => x.FkSizeId,
+                        principalTable: "Sizes",
+                        principalColumn: "SizeId");
                 });
 
             migrationBuilder.CreateTable(
@@ -382,11 +394,6 @@ namespace SkoButik_Client.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Inventory_ProductId",
-                table: "Inventory",
-                column: "ProductId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_OrderItems_FkOrderId",
                 table: "OrderItems",
                 column: "FkOrderId");
@@ -395,6 +402,11 @@ namespace SkoButik_Client.Migrations
                 name: "IX_OrderItems_FkProductId",
                 table: "OrderItems",
                 column: "FkProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderItems_FkSizeId",
+                table: "OrderItems",
+                column: "FkSizeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrderItems_ProductId",
@@ -427,6 +439,16 @@ namespace SkoButik_Client.Migrations
                 column: "FkSizeId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ProductSizeInventories_FkProductId",
+                table: "ProductSizeInventories",
+                column: "FkProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductSizeInventories_FkSizeId",
+                table: "ProductSizeInventories",
+                column: "FkSizeId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ShoppingCartItems_FkProductId",
                 table: "ShoppingCartItems",
                 column: "FkProductId");
@@ -451,10 +473,10 @@ namespace SkoButik_Client.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Inventory");
+                name: "OrderItems");
 
             migrationBuilder.DropTable(
-                name: "OrderItems");
+                name: "ProductSizeInventories");
 
             migrationBuilder.DropTable(
                 name: "ShoppingCartItems");

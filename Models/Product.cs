@@ -42,9 +42,10 @@ namespace SkoButik_Client.Models
         public int FkBrandId { get; set; }
         public Brand? Brand { get; set; }
 
-        public ICollection<Inventory>? Inventory { get; set; }
-
+        //public ICollection<Inventory>? Inventory { get; set; }
 
         public ICollection<OrderItem>? OrderItems { get; set; }
+
+        public ICollection<ProductSizeInventory> ProductSizeInventories { get; set; }
     }
 }
