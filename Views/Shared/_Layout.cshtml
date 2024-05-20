@@ -39,7 +39,17 @@
                         {
                         //put <l> in here
                         } *@
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="bi bi-lock" style="font-size: 1.5rem"></i> Admin
+                            </a>
 
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" asp-controller="Orders" asp-action="OrderList"><i class="bi bi-file-text"></i> All orders</a>                                
+                                <a class="dropdown-item" asp-controller="Orders" asp-action="OrderStats"><i class="bi bi-graph-up"></i> Order statistics</a>
+                                <a class="dropdown-item" asp-controller="Orders" asp-action="MostSold"><i class="bi bi-bar-chart"></i> Most sold product</a>
+                            </div>
+                        </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Products" asp-action="Index"><i class="bi bi-box" style="font-size: 1.5rem"></i> Shoes</a>
                         </li>
