@@ -245,39 +245,5 @@ namespace SkoButik_Client.Controllers
             var productList = await search.ToListAsync();
             return View(productList);
         }
-
-
-        //GetStockStatus
-        public async Task<IActionResult> GetStockStatus(int productId, int sizeId)
-        {
-            var inventory = await _context.ProductSizeInventories
-                .FirstOrDefaultAsync(i => i.FkProductId == productId && i.FkSizeId == sizeId);
-
-            if (inventory == null)
-            {
-                return Json(new { stockMessage = "Size not found", stockLevel = "none" });
-            }
-
-            string stockMessage;
-            string stockLevel;
-
-            if (inventory.QuantityInStock >= 3)
-            {
-                stockMessage = "Several in stock";
-                stockLevel = "high";
-            }
-            else if (inventory.QuantityInStock == 1 || inventory.QuantityInStock == 2)
-            {
-                stockMessage = "Few left";
-                stockLevel = "medium";
-            }
-            else
-            {
-                stockMessage = "Out of stock";
-                stockLevel = "low";
-            }
-
-            return Json(new { stockMessage, stockLevel });
-        }
     }
 }

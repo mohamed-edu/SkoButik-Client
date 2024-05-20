@@ -14,6 +14,5 @@ namespace SkoButik_Client.Models
         public string SizeName {  get; set; }
 
         public ICollection<Product>? Products { get; set;}
-        public ICollection<ProductSizeInventory> ProductSizeInventories { get; set; }
     }
 }
