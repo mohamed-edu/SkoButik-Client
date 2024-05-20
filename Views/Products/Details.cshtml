@@ -83,3 +83,136 @@
         });
     </script>
 }
+
+
+
+
+
+@* //none, low, high status *@
+@*     <div class="row">
+    <div class="col-md-8 offset-2">
+        <div class="card mb-2 mx-auto" style="max-width: 620px;">
+            <div class="row g-0">
+                <div class="col-md-12">
+                    <div class="card-header text-white bg-info">
+                        <p class="card-text">
+                            <h5 class="card-title">
+                                @Model.ProductName
+                            </h5>
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <img src="@Model.ImageUrl" width="100%" alt="@Model.ProductName">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <p class="card-text">@Model.Description</p>
+                        <p class="card-text">
+                            <b>Size: </b>
+                            <select class="form-select" id="sizeSelect" asp-for="FkSizeId" asp-items="@ViewBag.Sizes">
+                                <option value="">-- Select Size --</option>
+                            </select>
+                        </p>
+                        <p class="card-text" id="stockStatus">
+                            <b><i class="bi bi-record-fill"></i>Stock Status: </b><span id="stockText"></span>
+                        </p>
+                        <p class="card-text">
+                            <b>Brand: </b>
+                            @Model.Brand.BrandName
+                        </p>
+                        <p class="card-text"><b>Price: </b>@Model.Price.ToString("c")</p>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="card-footer">
+                        <p class="card-text">
+                            <a class="btn btn-outline-primary float-right" asp-action="Index">
+                                Back to List
+                            </a>
+                            <a class="btn btn-success text-white" id="addToCartBtn"
+                               asp-controller="Orders"
+                               asp-action="AddItemToShoppingCart"
+                               asp-route-id="@Model.ProductId">
+                                <i class="bi bi-cart-plus"></i> Add to Cart
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 
+ *@
+
+@* //none, low, high status *@
+@* 
+@section Scripts {
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+    $(document).ready(function () {
+        $('#sizeSelect').change(function () {
+            var sizeId = $(this).val();
+            var productId = '@Model.ProductId';
+
+            if (sizeId) {
+                $.ajax({
+                    url: '/Products/GetStockStatus',
+                    type: 'GET',
+                    data: { productId: productId, sizeId: sizeId },
+                    success: function (response) {
+                        var stockStatus = $('#stockStatus');
+                        var stockText = $('#stockText');
+
+                        stockText.text(response.stockMessage);
+
+                        stockStatus.removeClass('text-success text-warning text-danger');
+
+                        if (response.stockLevel === 'high') {
+                            stockStatus.addClass('text-success');
+                        } else if (response.stockLevel === 'medium') {
+                            stockStatus.addClass('text-warning');
+                        } else {
+                            stockStatus.addClass('text-danger');
+                        }
+                    },
+                    error: function () {
+                        alert('Error retrieving stock status');
+                    }
+                });
+            } else {
+                $('#stockText').text('');
+                $('#stockStatus').removeClass('text-success text-warning text-danger');
+            }
+        });
+
+        $('#addToCartBtn').click(function () {
+            var sizeId = $('#sizeSelect').val();
+            var productId = '@Model.ProductId';
+
+            if (!sizeId) {
+                alert('Please select a size');
+                return;
+            }
+
+            $.ajax({
+                url: '/Products/UpdateProductSize',
+                type: 'POST',
+                data: { productId: productId, sizeId: sizeId },
+                success: function (response) {
+                    if (response.success) {
+                        // Optionally update the price or other details if needed
+                        window.location.href = '/Orders/AddItemToShoppingCart/' + productId;
+                    } else {
+                        alert('Error updating product size: ' + response.message);
+                    }
+                },
+                error: function () {
+                    alert('Error updating product size');
+                }
+            });
+        });
+    });
+    </script>
+}
+ *@

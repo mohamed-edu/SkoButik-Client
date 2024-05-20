@@ -12,8 +12,8 @@ using SkoButik_Client.Data;
 namespace SkoButik_Client.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240518142332_Almost")]
-    partial class Almost
+    [Migration("20240519170527_ProductSizeInventories")]
+    partial class ProductSizeInventories
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -298,27 +298,6 @@ namespace SkoButik_Client.Migrations
                     b.ToTable("Campaigns");
                 });
 
-            modelBuilder.Entity("SkoButik_Client.Models.Inventory", b =>
-                {
-                    b.Property<int>("InventoryId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("InventoryId"));
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("QuantityInStock")
-                        .HasColumnType("int");
-
-                    b.HasKey("InventoryId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("Inventory");
-                });
-
             modelBuilder.Entity("SkoButik_Client.Models.Order", b =>
                 {
                     b.Property<int>("OrderId")
@@ -363,6 +342,9 @@ namespace SkoButik_Client.Migrations
                     b.Property<int>("FkProductId")
                         .HasColumnType("int");
 
+                    b.Property<int>("FkSizeId")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(10, 2)");
 
@@ -374,6 +356,8 @@ namespace SkoButik_Client.Migrations
                     b.HasIndex("FkOrderId");
 
                     b.HasIndex("FkProductId");
+
+                    b.HasIndex("FkSizeId");
 
                     b.HasIndex("ProductId");
 
@@ -422,6 +406,32 @@ namespace SkoButik_Client.Migrations
                     b.HasIndex("FkSizeId");
 
                     b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("SkoButik_Client.Models.ProductSizeInventory", b =>
+                {
+                    b.Property<int>("ProductSizeInventoryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductSizeInventoryId"));
+
+                    b.Property<int>("FkProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FkSizeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QuantityInStock")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProductSizeInventoryId");
+
+                    b.HasIndex("FkProductId");
+
+                    b.HasIndex("FkSizeId");
+
+                    b.ToTable("ProductSizeInventories");
                 });
 
             modelBuilder.Entity("SkoButik_Client.Models.ShoppingCartItem", b =>
@@ -518,17 +528,6 @@ namespace SkoButik_Client.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SkoButik_Client.Models.Inventory", b =>
-                {
-                    b.HasOne("SkoButik_Client.Models.Product", "Product")
-                        .WithMany("Inventory")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-                });
-
             modelBuilder.Entity("SkoButik_Client.Models.Order", b =>
                 {
                     b.HasOne("SkoButik_Client.Models.ApplicationUser", null)
@@ -555,7 +554,13 @@ namespace SkoButik_Client.Migrations
                     b.HasOne("SkoButik_Client.Models.Product", "Products")
                         .WithMany()
                         .HasForeignKey("FkProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("SkoButik_Client.Models.Size", "Size")
+                        .WithMany()
+                        .HasForeignKey("FkSizeId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("SkoButik_Client.Models.Product", null)
@@ -565,6 +570,8 @@ namespace SkoButik_Client.Migrations
                     b.Navigation("Orders");
 
                     b.Navigation("Products");
+
+                    b.Navigation("Size");
                 });
 
             modelBuilder.Entity("SkoButik_Client.Models.Product", b =>
@@ -590,6 +597,25 @@ namespace SkoButik_Client.Migrations
                     b.Navigation("Brand");
 
                     b.Navigation("Campaign");
+
+                    b.Navigation("Size");
+                });
+
+            modelBuilder.Entity("SkoButik_Client.Models.ProductSizeInventory", b =>
+                {
+                    b.HasOne("SkoButik_Client.Models.Product", "Product")
+                        .WithMany("ProductSizeInventories")
+                        .HasForeignKey("FkProductId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("SkoButik_Client.Models.Size", "Size")
+                        .WithMany("ProductSizeInventories")
+                        .HasForeignKey("FkSizeId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Product");
 
                     b.Navigation("Size");
                 });
@@ -627,13 +653,15 @@ namespace SkoButik_Client.Migrations
 
             modelBuilder.Entity("SkoButik_Client.Models.Product", b =>
                 {
-                    b.Navigation("Inventory");
-
                     b.Navigation("OrderItems");
+
+                    b.Navigation("ProductSizeInventories");
                 });
 
             modelBuilder.Entity("SkoButik_Client.Models.Size", b =>
                 {
+                    b.Navigation("ProductSizeInventories");
+
                     b.Navigation("Products");
                 });
 #pragma warning restore 612, 618

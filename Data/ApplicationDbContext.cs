@@ -26,12 +26,13 @@ namespace SkoButik_Client.Data
         public DbSet<ShoppingCartItem> ShoppingCartItems { get; set; }
 
         //Inventory Part
-        public DbSet<Inventory> Inventory { get; set; }
+        //public DbSet<Inventory> Inventory { get; set; }
+        public DbSet<ProductSizeInventory> ProductSizeInventories { get; set; }
 
         //modelBuilder
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Configure primary keys
+            // Configure primary keys / 
             modelBuilder.Entity<Order>().HasKey(o => o.OrderId);
             modelBuilder.Entity<OrderItem>().HasKey(oi => oi.OrderItemId);
             modelBuilder.Entity<Product>().HasKey(p => p.ProductId);
@@ -53,6 +54,33 @@ namespace SkoButik_Client.Data
                 .HasForeignKey(o => o.UserId);
 
             base.OnModelCreating(modelBuilder);
+
+            //////////////////ÍNVENTORY//////////////////////////
+            modelBuilder.Entity<Product>()
+                .HasMany(p => p.ProductSizeInventories)
+                .WithOne(psi => psi.Product)
+                .HasForeignKey(psi => psi.FkProductId)
+                .OnDelete(DeleteBehavior.NoAction); // Specifiera No Action för att undvika cykler
+
+            modelBuilder.Entity<Size>()
+                .HasMany(s => s.ProductSizeInventories)
+                .WithOne(psi => psi.Size)
+                .HasForeignKey(psi => psi.FkSizeId)
+                .OnDelete(DeleteBehavior.NoAction); // Specifiera No Action för att undvika cykler
+
+            modelBuilder.Entity<OrderItem>()
+                .HasOne(oi => oi.Products)
+                .WithMany()
+                .HasForeignKey(oi => oi.FkProductId)
+                .OnDelete(DeleteBehavior.Restrict);  // Specifiera No Action för att undvika cykler
+
+            modelBuilder.Entity<OrderItem>()
+                .HasOne(oi => oi.Size)
+                .WithMany()
+                .HasForeignKey(oi => oi.FkSizeId)
+                .OnDelete(DeleteBehavior.Restrict);  // Specifiera No Action för att undvika cykler
+
+
         }
 
     }
