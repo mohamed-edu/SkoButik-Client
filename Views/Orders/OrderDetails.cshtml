@@ -27,7 +27,7 @@
             <tr>
                 <td>@item.Products.ProductName</td>
                 <td>@item.Amount</td>
-                <td>@(item.Amount * item.Price)</td>
+                <td>@(item.Amount * item.Products.AdjustedPrice)</td>
             </tr>
         }
     </tbody>

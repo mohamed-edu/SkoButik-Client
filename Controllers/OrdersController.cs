@@ -133,10 +133,49 @@ namespace SkoButik_Client.Controllers
         //_______________________________________________________________________
 
         // OrderStats
+
+        //public IActionResult OrderStats()
+        //{
+        //    var orderItems = _context.Orders
+        //        .Include(o => o.OrderItems)
+        //        .ThenInclude(o => o.Products)
+        //        .Where(o => o.OrderDate.Date >= DateTime.UtcNow.Date.AddDays(-7))
+        //        .SelectMany(o => o.OrderItems)
+        //        .ToList();
+
+        //    // Create an instance of the adapter
+        //    var adapter = new OrderStatsAdapter(_context);
+
+        //    var orderStats = orderItems
+        //        .GroupBy(o => o.Orders?.OrderDate.Date)
+        //        .Select(g => new 
+        //        {
+        //            OrderDate = g.Key,
+        //            OrderCount = g.Count(),
+        //            TotalSales = adapter.CalculateTotalSales(g.ToList())
+        //        })
+        //        .OrderByDescending(o => o.OrderDate)
+        //        .ToList()
+        //     .Select(o => new OrderStatsViewModel
+        //      {
+        //          OrderDate = (DateTime)o.OrderDate,
+        //          OrderCount = o.OrderCount,
+        //          TotalSales = o.TotalSales
+        //      })
+        //        .ToList();
+
+        //    return View(orderStats);
+        //}
+
         public IActionResult OrderStats()
         {
+                // Create an instance of the adapter
+                var adapter = new OrderStatsAdapter(_context);
+
             var orderStats = _context.Orders
                 .Include(o => o.OrderItems)
+                .ThenInclude(o => o.Products)
+                .ThenInclude(o => o.Campaign)
                 .Where(o => o.OrderDate.Date >= DateTime.UtcNow.Date.AddDays(-7)) // Only consider orders from the last 7 days
                 .GroupBy(o => o.OrderDate.Date)
                 .Select(g => new
@@ -187,7 +226,7 @@ namespace SkoButik_Client.Controllers
 
         public async Task<IActionResult> OrderList(string currency = "SEK")
         {
-            var orders = await _context.Orders.Include(o => o.OrderItems).ToListAsync();
+            var orders = await _context.Orders.Include(o => o.OrderItems).ThenInclude(o => o.Products).ThenInclude(o => o.Campaign).ToListAsync();
             decimal exchangeRate = 1.0m;
 
             if (currency != "SEK")
@@ -215,6 +254,7 @@ namespace SkoButik_Client.Controllers
             var order = _context.Orders
                 .Include(o => o.OrderItems)
                     .ThenInclude(oi => oi.Products)
+                    .ThenInclude(oi => oi.Campaign)
                 .Include(o => o.ApplicationUser)
                 .FirstOrDefault(o => o.OrderId == id);
 
@@ -223,7 +263,7 @@ namespace SkoButik_Client.Controllers
                 return NotFound();
             }
 
-            var totalPrice = order.OrderItems.Sum(oi => oi.Amount * oi.Price);
+            var totalPrice = order.OrderItems.Sum(oi => oi.Amount * oi.Products.AdjustedPrice);
 
             var model = new OrderDetailsViewModel
             {
