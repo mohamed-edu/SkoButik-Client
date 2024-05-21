@@ -17,6 +17,7 @@ namespace SkoButik_Client.Data.Services
                 .Include(o => o.ApplicationUser) // Include ApplicationUser to fetch user details
                 .Include(o => o.OrderItems)
                 .ThenInclude(oi => oi.Products) // Include Products within OrderItems
+                .ThenInclude(oi => oi.Campaign)
                 .ToListAsync();
         }
 
@@ -38,7 +39,7 @@ namespace SkoButik_Client.Data.Services
                     Amount = item.Amount,
                     FkProductId = item.Product.ProductId,
                     FkOrderId = order.OrderId,
-                    Price = item.Product.Price
+                    Price = item.Product.AdjustedPrice
 
                 };
                 await _context.OrderItems.AddAsync(orderItem);

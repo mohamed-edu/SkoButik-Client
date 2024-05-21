@@ -80,13 +80,28 @@ namespace SkoButik_Client.Data.Cart
                 .ToList());
         }
 
+        //public decimal GetShoppingCartTotal()
+        //{
+        //    var total = _context.ShoppingCartItems.Where(n => n.ShoppingCartId == ShoppingCartId).Select(n =>
+        //    n.Product.Price * n.Amount).Sum();
+        //    return total;
+        //}
+
         public decimal GetShoppingCartTotal()
         {
-            var total = _context.ShoppingCartItems.Where(n => n.ShoppingCartId == ShoppingCartId).Select(n =>
-            n.Product.Price * n.Amount).Sum();
+            var cartItems = _context.ShoppingCartItems
+                .Where(n => n.ShoppingCartId == ShoppingCartId)
+                .Include(n =>n.Product)
+                .ThenInclude(n =>n.Campaign)
+                .ToList();
+            decimal total = 0;
+
+            foreach(var cartItem in cartItems)
+            {
+                total += cartItem.Product.AdjustedPrice * cartItem.Amount;
+            }
             return total;
         }
-
 
 
         //Clear Shopping Cart

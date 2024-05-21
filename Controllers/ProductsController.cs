@@ -39,6 +39,7 @@ namespace SkoButik_Client.Controllers
             var product = await _context.Products
                 .Include(p => p.Brand)
                 .Include(p => p.Size)
+                .Include(p => p.Campaign)
                 .FirstOrDefaultAsync(m => m.ProductId == id);
 
             if (product == null)
