@@ -29,7 +29,7 @@
 
     /* //Produc cards */
     .fixed-size-card {
-        height: 570px;
+        height: 590px;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
@@ -120,9 +120,24 @@
                             </div>
                             <div class="col-md-12">
                                 <div class="card-footer">
-                                    <div class="text">
+                                    @if (item.FkCampaignId >= 2)
+                                    {
+                                        <div class="text" style="color: red">
+                                            <i class="bi bi-tag-fill"></i> Price @item.AdjustedPrice.ToString("c")
+                                        </div>
+                                        <div class="text" style="font-size: small">
+                                           (Original price @item.Price.ToString("c"))    
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="text">
+                                            Price @item.AdjustedPrice.ToString("c")
+                                        </div>
+                                    }
+@*                                     <div class="text">
                                         Price @item.AdjustedPrice.ToString("c")
-                                    </div>
+                                    </div> *@
                                     <a class="btn btn-outline-info" asp-action="Details" asp-route-id="@item.ProductId">
                                         <i class="bi bi-eye-fill"></i> Show Details
                                     </a>
