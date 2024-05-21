@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace SkoButik_Client.Migrations
 {
     /// <inheritdoc />
-    public partial class latest : Migration
+    public partial class newupdate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
