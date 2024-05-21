@@ -75,6 +75,8 @@ namespace SkoButik_Client
             app.MapRazorPages();
 
             app.Run();
+
+            //Testar att pusha
  
         }
     }
