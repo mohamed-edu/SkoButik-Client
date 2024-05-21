@@ -234,5 +234,6 @@ namespace SkoButik_Client.Controllers
 
             return View(model);
         }
+
     }
 }

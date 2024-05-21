@@ -1,8 +1,9 @@
-﻿ @model IEnumerable<Product>
+﻿  @model IEnumerable<Product>
 
 @{
     ViewData["Title"] = "List of products";
 }
+
 
 <style>
     /* //List */
@@ -43,6 +44,7 @@
 
     .card-body {
         display: flex;
+        height: 70px;
         justify-content: center;
         align-items: center;
         flex-direction: column;
@@ -55,6 +57,7 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
+        background-color: white;
     }
 
         .card-footer a {
@@ -69,11 +72,11 @@
         <div class="center-list">
             <h3><i class="bi bi-filter-right"></i>Filter by Brands</h3>
             <ul class="list-group">
-                <li><a asp-controller ="Products" asp-action="Index">All Products</a></li>
-                <li><a asp-controller="ProductByBrand" asp-action="GetBrand" asp-route-brandName="Nike" style="color: blue;">Nike</a></li>
-                <li><a asp-controller="ProductByBrand" asp-action="GetBrand" asp-route-brandName="Adidas" style="color: red;">Adidas</a></li>
-                <li><a asp-controller="ProductByBrand" asp-action="GetBrand" asp-route-brandName="Puma" style="color: green;">Puma</a></li>
-                <li><a asp-controller="ProductByBrand" asp-action="GetBrand" asp-route-brandName="Vans" style="color: orange;">Vans</a></li>
+                <li class="btn btn-outline-primary"><a asp-controller="Products" asp-action="Index" style="color:black;">All Products</a></li>
+                <li class="btn btn-outline-primary"><a asp-controller="ProductByBrand" asp-action="GetBrand" asp-route-brandName="Nike" style="color:black;">Nike</a></li>
+                <li class="btn btn-outline-primary"><a asp-controller="ProductByBrand" asp-action="GetBrand" asp-route-brandName="Adidas" style="color:black;">Adidas</a></li>
+                <li class="btn btn-outline-primary"><a asp-controller="ProductByBrand" asp-action="GetBrand" asp-route-brandName="Puma" style="color: black;">Puma</a></li>
+                <li class="btn btn-outline-primary"><a asp-controller="ProductByBrand" asp-action="GetBrand" asp-route-brandName="Vans" style="color: black;">Vans</a></li>
             </ul>
         </div>
     </div>
@@ -86,11 +89,19 @@
                     <div class="card mb-3 fixed-size-card" style="max-width: 350px; background-color: white">
                         <div class="row g-1">
                             <div class="col-md-12">
-                                <div class="card-header text-white" style="display: flex; justify-content: center; align-items: center; background-color: teal;">
+                                <div class="card-header text-dark" style="display: flex; justify-content: center; align-items: center; background-color: white;">
                                     <p class="card-text">
                                         <h5 class="card-title">
                                             @item.ProductName
-                                            <a class="text-white float-right" asp-action="Edit" asp-route-id="@item.ProductId"><i class="bi bi-pencil-square"></i></a>
+                                            <br />
+                                            @* //Put in User admin role *@
+                                            <div class="d-flex justify-content-center">
+                                                <a class="text-white mx-2" asp-action="Edit" asp-route-id="@item.ProductId"><i class="bi bi-pencil-square" style="color: orange"></i></a>
+
+                                                <a class="text-white mx-2" asp-action="Create" asp-route-id="@item.ProductId"><i class="bi bi-hammer" style="color: orange"></i></a>
+
+                                                <a class="text-white mx-2" asp-action="Delete" asp-route-id="@item.ProductId"><i class="bi bi-trash3" style="color: orange"></i></a>
+                                            </div>
                                         </h5>
                                     </p>
                                 </div>
@@ -107,12 +118,9 @@
                             </div>
                             <div class="col-md-12">
                                 <div class="card-footer">
-                                    <a class="btn btn-success text-white"
-                                       asp-controller="Orders"
-                                       asp-action="AddItemToShoppingCart"
-                                       asp-route-id="@item.ProductId">
-                                        <i class="bi bi-cart-plus"></i> (Price @item.Price.ToString("c"))
-                                    </a>
+                                    <div class="text">
+                                        Price @item.Price.ToString("c")
+                                    </div>
                                     <a class="btn btn-outline-info" asp-action="Details" asp-route-id="@item.ProductId">
                                         <i class="bi bi-eye-fill"></i> Show Details
                                     </a>
@@ -125,4 +133,3 @@
         </div>
     </div>
 </div>
-
