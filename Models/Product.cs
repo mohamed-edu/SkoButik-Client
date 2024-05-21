@@ -26,6 +26,11 @@ namespace SkoButik_Client.Models
        
         [Column(TypeName = "decimal(10, 2)")]
         public decimal Price { get; set; }
+        [NotMapped]
+        public decimal AdjustedPrice
+        {
+            get => Price - (Campaign?.CampaignAmount * 0.01m * Price ?? 0m);
+        }
 
         // One to many = Campaign 1---[ Products
         [ForeignKey("Campaign")]

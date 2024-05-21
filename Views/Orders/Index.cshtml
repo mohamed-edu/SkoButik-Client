@@ -35,7 +35,7 @@
                                         {
                                             <li>
                                                 <div class="alert alert-info" role="alert">
-                                                    <span class="badge bg-success">@item.Amount</span> [@item.Price.ToString("c")] - @item.Products?.ProductName
+                                                    <span class="badge bg-success">@item.Amount</span> [@item.Products.AdjustedPrice.ToString("c")] - @item.Products?.ProductName
                                                 </div>
                                             </li>
                                         }
@@ -45,7 +45,7 @@
                             <td class="align-middle">
                                 @if (order.OrderItems != null && order.OrderItems.Count > 0)
                                 {
-                                    @(order.OrderItems.Sum(m => m.Price * m.Amount).ToString("c"))
+                                    @(order.OrderItems.Sum(m => m.Products.AdjustedPrice * m.Amount).ToString("c"))
                                 }
                             </td>
                             <td class="align-middle">@order.OrderDate</td>

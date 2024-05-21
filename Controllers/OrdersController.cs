@@ -55,7 +55,7 @@ namespace SkoButik_Client.Controllers
                 Console.WriteLine($"OrderItems Count: {order.OrderItems.Count}");
                 foreach (var item in order.OrderItems)
                 {
-                    Console.WriteLine($"ProductName: {item.Products?.ProductName}, Price: {item.Price}, Amount: {item.Amount}");
+                    Console.WriteLine($"ProductName: {item.Products?.ProductName}, Price: {item.Products?.AdjustedPrice}, Amount: {item.Amount}");
                 }
             }
 
