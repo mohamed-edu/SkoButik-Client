@@ -18,14 +18,14 @@
         width: 100%; /* Optional: Adjust if you want the list items to take full width */
     }
 
-    .list-group li a {
-        font-size: 1.4em; /* Increase the text size */
-        color: inherit; /* Inherit color defined in the inline styles */
-        text-decoration: none; /* Remove the underline */
-    }
+        .list-group li a {
+            font-size: 1.4em; /* Increase the text size */
+            color: inherit; /* Inherit color defined in the inline styles */
+            text-decoration: none; /* Remove the underline */
+        }
 
-    .list-group li {
-    }
+        .list-group li {
+        }
 
     /* //Produc cards */
     .fixed-size-card {
@@ -50,8 +50,6 @@
         flex-direction: column;
         flex: 1;
         text-align: center;
- 
-
     }
 
     .card-footer {
@@ -79,9 +77,9 @@
                 <li class="btn btn-outline-primary"><a asp-controller="ProductByBrand" asp-action="GetBrand" asp-route-brandName="Adidas" style="color:black;">Adidas</a></li>
                 <li class="btn btn-outline-primary"><a asp-controller="ProductByBrand" asp-action="GetBrand" asp-route-brandName="Puma" style="color: black;">Puma</a></li>
                 <li class="btn btn-outline-primary"><a asp-controller="ProductByBrand" asp-action="GetBrand" asp-route-brandName="Vans" style="color: black;">Vans</a></li>
-                <br />
+                <br/>
                 <li class="btn btn-warning  fs-3"><a asp-controller="Products" asp-action="CampaignProducts" style="color: orangered; font-weight:700;">Sale</a></li>
-            </ul> 
+            </ul>
         </div>
     </div>
 
@@ -113,8 +111,8 @@
                             <div class="col-md-12">
                                 <img src="@item.ImageUrl" class="fixed-size-img" alt="@item.ProductName">
                             </div>
-                         @*    <div class="col-md-6">
-                            </div> *@
+                            @*    <div class="col-md-6">
+                        </div> *@
                             <div class="col-md-12">
                                 <div class="card-body">
                                     <p class="card-text">@item.Description</p>
@@ -128,7 +126,7 @@
                                             <i class="bi bi-tag-fill"></i> Price @item.AdjustedPrice.ToString("c")
                                         </div>
                                         <div class="text" style="font-size: small">
-                                           (Original price @item.Price.ToString("c"))    
+                                            (Original price @item.Price.ToString("c"))
                                         </div>
                                     }
                                     else
@@ -137,9 +135,9 @@
                                             Price @item.AdjustedPrice.ToString("c")
                                         </div>
                                     }
-@*                                     <div class="text">
-                                        Price @item.AdjustedPrice.ToString("c")
-                                    </div> *@
+                                    @*                                     <div class="text">
+                                Price @item.AdjustedPrice.ToString("c")
+                                </div> *@
                                     <a class="btn btn-outline-info" asp-action="Details" asp-route-id="@item.ProductId">
                                         <i class="bi bi-eye-fill"></i> Show Details
                                     </a>
