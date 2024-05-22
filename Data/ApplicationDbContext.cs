@@ -28,6 +28,10 @@ namespace SkoButik_Client.Data
         //Inventory Part
         //public DbSet<Inventory> Inventory { get; set; }
 
+        //Contact
+        public DbSet<Contact> Contact { get; set; }
+
+
         //modelBuilder
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
