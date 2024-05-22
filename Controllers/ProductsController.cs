@@ -27,6 +27,17 @@ namespace SkoButik_Client.Controllers
             var applicationDbContext = _context.Products.Include(p => p.Brand).Include(p => p.Size).Include(p => p.Campaign);
             return View(await applicationDbContext.ToListAsync());
         }
+        // GET: Campaign products 
+        public async Task<IActionResult> CampaignProducts ()
+        {
+            var campaignProducts = _context.Products
+                .Include(p => p.Brand)
+                .Include(p => p.Size)
+                .Include(p => p.Campaign)
+                .Where(p => p.FkCampaignId >= 2);
+                
+            return View(await campaignProducts.ToListAsync());
+        }
 
         // GET: Products/Details/5
         public async Task<IActionResult> Details(int? id)
