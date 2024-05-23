@@ -23,7 +23,8 @@ namespace SkoButik_Client.Controllers
                 var productList = await productsByBrand
             .Include(p => p.Brand)
             .Where(p => p.Brand.BrandName == brandName) // Use the brandName parameter
-            .Include(p => p.Size)
+            .Include(p => p.Inventories)
+            .ThenInclude(i => i.Sizes)
             .ToListAsync();
 
         return View(productList);

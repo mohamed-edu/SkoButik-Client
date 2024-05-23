@@ -16,9 +16,12 @@ namespace SkoButik_Client.Models
         public int FkProductId { get; set; }
         public Product? Products { get; set; }
 
-
         [ForeignKey("Order")]
         public int FkOrderId { get; set; }
         public Order? Orders { get; set; }
+
+        [ForeignKey("Size")]
+        public int FkSizeId { get; set; }
+        public Size? Sizes { get; set; }
     }
 }

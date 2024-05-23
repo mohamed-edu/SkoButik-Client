@@ -28,10 +28,12 @@ namespace SkoButik_Client.Data.Cart
         }
 
         //Add Item to Shopping cart
-        public void AddItemToCart(Product product)
+        public void AddItemToCart(Product product, int sizeId)
         {
-            var shoppingCartItem = _context.ShoppingCartItems.FirstOrDefault(n => n.FkProductId == product.ProductId &&
-            n.ShoppingCartId == ShoppingCartId);
+            var shoppingCartItem = _context.ShoppingCartItems.FirstOrDefault(
+                n => n.FkProductId == product.ProductId &&
+                n.FkSizeId == sizeId &&
+                n.ShoppingCartId == ShoppingCartId);
 
             if (shoppingCartItem == null)
             {
@@ -39,6 +41,8 @@ namespace SkoButik_Client.Data.Cart
                 {
                     ShoppingCartId = ShoppingCartId,
                     Product = product,
+                    FkProductId = product.ProductId,
+                    FkSizeId = sizeId,
                     Amount = 1
                 };
 
@@ -48,13 +52,25 @@ namespace SkoButik_Client.Data.Cart
             {
                 shoppingCartItem.Amount++;
             }
+
+            var inventoryItem = _context.Inventories.FirstOrDefault(i => i.FkProductId == product.ProductId && i.FkSizeId == sizeId);
+            if (inventoryItem == null || inventoryItem.Quantity < shoppingCartItem.Amount)
+            {
+                throw new Exception($"Not enough stock for product {product.ProductName} in size {inventoryItem.Sizes?.SizeName}");
+            }
+
+            inventoryItem.Quantity -= shoppingCartItem.Amount;
+
             _context.SaveChanges();
         }
 
         //Remove Item from Shopping cart
-        public void RemoveItemFromCart(Product product)
+        public void RemoveItemFromCart(Product product, int sizeId)
         {
-            var shoppingCartItem = _context.ShoppingCartItems.FirstOrDefault(n => n.Product.ProductId == product.ProductId && n.ShoppingCartId == ShoppingCartId);
+            var shoppingCartItem = _context.ShoppingCartItems.FirstOrDefault(
+                n => n.FkProductId == product.ProductId &&
+                n.FkSizeId == sizeId &&        // Kontrollera även storleken
+                n.ShoppingCartId == ShoppingCartId);
 
             if (shoppingCartItem != null)
             {
@@ -67,6 +83,7 @@ namespace SkoButik_Client.Data.Cart
                     _context.ShoppingCartItems.Remove(shoppingCartItem);
                 }
             }
+
             _context.SaveChanges();
         }
 
@@ -76,16 +93,20 @@ namespace SkoButik_Client.Data.Cart
             return ShoppingCartitems ?? (ShoppingCartitems = _context.ShoppingCartItems
                 .Where(n => n.ShoppingCartId == ShoppingCartId)
                 .Include(n => n.Product)
-                .ThenInclude(p => p.Size) // Include Size navigation property
+                .Select(item => new ShoppingCartItem
+                {
+                    ShoppingCartItemId = item.ShoppingCartItemId,
+                    FkProductId = item.FkProductId,
+                    Product = item.Product, // Keep the product reference
+                    FkSizeId = item.FkSizeId, // Keep the size ID
+                    Size = _context.Inventories // Fetch the size information from inventory
+                        .Where(i => i.FkProductId == item.FkProductId && i.FkSizeId == item.FkSizeId)
+                        .Select(i => i.Sizes)
+                        .FirstOrDefault(),
+                    Amount = item.Amount
+                })
                 .ToList());
         }
-
-        //public decimal GetShoppingCartTotal()
-        //{
-        //    var total = _context.ShoppingCartItems.Where(n => n.ShoppingCartId == ShoppingCartId).Select(n =>
-        //    n.Product.Price * n.Amount).Sum();
-        //    return total;
-        //}
 
         public decimal GetShoppingCartTotal()
         {

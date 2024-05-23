@@ -3,17 +3,20 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SkoButik_Client.Models
 {
-    //public class Inventory
-    //{
-    //    [Key]
-    //    public int InventoryId { get; set; }
-    //    public int QuantityInStock { get; set; }
+    public class Inventory
+    {
+        [Key]
+        public int InventoryId { get; set; }
 
-    //    [ForeignKey("Product")]
-    //    public int ProductId { get; set; }
-    //    public Product? Product { get; set; }
+        [ForeignKey("Product")]
+        public int FkProductId { get; set; }
+        public Product? Products { get; set; }
 
-        
-    //}
-    
+        [ForeignKey("Size")]
+        public int FkSizeId { get; set; }
+        public Size? Sizes { get; set; }
+
+        public int Quantity { get; set; }
+    }
+
 }

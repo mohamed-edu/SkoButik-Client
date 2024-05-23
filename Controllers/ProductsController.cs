@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using SkoButik_Client.Data;
 using SkoButik_Client.Data.Cart;
 using SkoButik_Client.Models;
+using SkoButik_Client.ViewModels;
 
 namespace SkoButik_Client.Controllers
 {
@@ -24,15 +25,21 @@ namespace SkoButik_Client.Controllers
         // GET: Products
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Products.Include(p => p.Brand).Include(p => p.Size).Include(p => p.Campaign);
+            var applicationDbContext = _context.Products
+                                        .Include(p => p.Brand)
+                                        .Include(p => p.Inventories)
+                                            .ThenInclude(i => i.Sizes)
+                                        .Include(p => p.Campaign);
             return View(await applicationDbContext.ToListAsync());
         }
+
         // GET: Campaign products 
         public async Task<IActionResult> CampaignProducts ()
         {
             var campaignProducts = _context.Products
                 .Include(p => p.Brand)
-                .Include(p => p.Size)
+                .Include(p => p.Inventories)
+                    .ThenInclude(i => i.Sizes)
                 .Include(p => p.Campaign)
                 .Where(p => p.FkCampaignId >= 2);
                 
@@ -49,7 +56,8 @@ namespace SkoButik_Client.Controllers
 
             var product = await _context.Products
                 .Include(p => p.Brand)
-                .Include(p => p.Size)
+                .Include(p => p.Inventories)
+                    .ThenInclude(i => i.Sizes)
                 .Include(p => p.Campaign)
                 .FirstOrDefaultAsync(m => m.ProductId == id);
 
@@ -58,7 +66,9 @@ namespace SkoButik_Client.Controllers
                 return NotFound();
             }
 
-            ViewBag.Sizes = new SelectList(_context.Sizes, "SizeId", "SizeName", product.FkSizeId);
+            var availableSizes = product.Inventories.Select(i => i.Sizes).Distinct().ToList();
+
+            ViewBag.AvailableSizes = availableSizes;
 
             return View(product);
         }
@@ -67,18 +77,20 @@ namespace SkoButik_Client.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateProductSize(int productId, int sizeId)
         {
-            var product = await _context.Products.FindAsync(productId);
+            var inventoryItem = await _context.Inventories.FirstOrDefaultAsync(i => i.FkProductId == productId && i.FkSizeId == sizeId);
 
-            if (product == null)
+            if (inventoryItem == null)
             {
-                return NotFound();
+                return NotFound("Inventory item not found for the selected product and size.");
             }
-
-            product.FkSizeId = sizeId;
 
             try
             {
-                _context.Update(product);
+                // Uppdatera storleksinformationen i inventory
+                inventoryItem.FkSizeId = sizeId;
+
+                // Sparar ändringarna
+                _context.Update(inventoryItem);
                 await _context.SaveChangesAsync();
                 return Json(new { success = true });
             }
@@ -87,11 +99,11 @@ namespace SkoButik_Client.Controllers
                 return Json(new { success = false, message = ex.Message });
             }
         }
-    
 
 
-    // GET: Products/Create
-    public IActionResult Create()
+
+        // GET: Products/Create
+        public IActionResult Create()
         {
             // Create a new instance of the Product class
             var product = new Product();
@@ -120,7 +132,7 @@ namespace SkoButik_Client.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["FkBrandId"] = new SelectList(_context.Brands, "BrandId", "BrandName", product.FkBrandId);
-            ViewData["FkSizeId"] = new SelectList(_context.Sizes, "SizeId", "SizeName", product.FkSizeId);
+            ViewData["SizeId"] = new SelectList(_context.Sizes, "SizeId", "SizeName");
             ViewData["FkCampaignId"] = new SelectList(_context.Campaigns, "CampaignId", "CampaignName", product.FkCampaignId);
             return View(product);
         }
@@ -139,7 +151,7 @@ namespace SkoButik_Client.Controllers
                 return NotFound();
             }
             ViewData["FkBrandId"] = new SelectList(_context.Brands, "BrandId", "BrandName", product.FkBrandId);
-            ViewData["FkSizeId"] = new SelectList(_context.Sizes, "SizeId", "SizeName", product.FkSizeId);
+            //ViewData["FkSizeId"] = new SelectList(_context.Sizes, "SizeId", "SizeName", product.FkSizeId);
             ViewData["FkCampaignId"] = new SelectList(_context.Campaigns, "CampaignId", "CampaignName", product.FkCampaignId);
             return View(product);
         }
@@ -177,7 +189,7 @@ namespace SkoButik_Client.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["FkBrandId"] = new SelectList(_context.Brands, "BrandId", "BrandName", product.FkBrandId);
-            ViewData["FkSizeId"] = new SelectList(_context.Sizes, "SizeId", "SizeName", product.FkSizeId);
+            //ViewData["FkSizeId"] = new SelectList(_context.Sizes, "SizeId", "SizeName", product.FkSizeId);
             ViewData["FkCampaignId"] = new SelectList(_context.Campaigns, "CampaignId", "CampaignName", product.FkCampaignId);
             return View(product);
         }
@@ -193,7 +205,8 @@ namespace SkoButik_Client.Controllers
 
             var product = await _context.Products
                 .Include(p => p.Brand)
-                .Include(p => p.Size)
+                .Include(p => p.Inventories)
+                    .ThenInclude(i => i.Sizes)
                 .Include(p => p.Campaign)
                 .FirstOrDefaultAsync(m => m.ProductId == id);
             if (product == null)
@@ -224,7 +237,7 @@ namespace SkoButik_Client.Controllers
             return _context.Products.Any(e => e.ProductId == id);
         }
 
-        // this is for seach bar
+        // this is for search bar
         public async Task<IActionResult> SearchProduct(string searchString)
         {
             if (_context.Products?.Any() != true)
@@ -232,7 +245,11 @@ namespace SkoButik_Client.Controllers
                 return Problem("Entity set 'MvcProductContext.Products' is null or empty.");
             }
 
-            var search = from m in _context.Products select m;
+            //var search = from m in _context.Products select m;
+
+            var search = from p in _context.Products
+                         join i in _context.Inventories on p.ProductId equals i.FkProductId
+                         select new { Product = p, Inventory = i };
 
             if (!String.IsNullOrEmpty(searchString))
             {
@@ -242,15 +259,15 @@ namespace SkoButik_Client.Controllers
                 {
                     // Search by name or description
                     search = search.Where(s =>
-                        s.ProductName.Contains(terms[0]) ||
-                        s.Description.Contains(terms[0]));
+                        s.Product.ProductName.Contains(terms[0]) ||
+                        s.Product.Description.Contains(terms[0]));
                 }
                 else if (terms.Length == 2)
                 {
                     // Search by name or description and size
                     search = search.Where(s =>
-                        (s.ProductName.Contains(terms[0]) || s.Description.Contains(terms[0])) &&
-                        s.Size.SizeName.Contains(terms[1]));
+                        (s.Product.ProductName.Contains(terms[0]) || s.Product.Description.Contains(terms[0])) &&
+                        s.Inventory.Sizes.SizeName.Contains(terms[1]));
                 }
             }
 

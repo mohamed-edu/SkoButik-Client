@@ -37,11 +37,6 @@ namespace SkoButik_Client.Models
         public int FkCampaignId { get; set; }
         public Campaign? Campaign { get; set; } = null;
 
-        //One to many = Size 1---[ Products
-        [ForeignKey("Size")]
-        public int FkSizeId { get; set; }
-        public Size? Size { get; set; }
-
         // One to many = Brand 1---[ Products
         [ForeignKey("Brand")]
         public int FkBrandId { get; set; }
@@ -49,6 +44,8 @@ namespace SkoButik_Client.Models
 
         //public ICollection<Inventory>? Inventory { get; set; }
 
+        public ICollection<Inventory>? Inventories { get; set; }
+        public ICollection<ShoppingCartItem>? ShoppingCartItems { get; set; }
         public ICollection<OrderItem>? OrderItems { get; set; }
     }
 }

@@ -17,6 +17,10 @@ namespace SkoButik_Client.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IOrdersService _ordersService;
 
+        private static readonly string _exchangeRateApiKey = "6e9a8cd53905eb9043c5f0ec";
+        private static readonly string _googleApiKey = "AIzaSyAPfoMTCytxHoeQKoactrGV6sJyKDRfSPQ";
+        private static readonly string _origin = "Håstaholmen 4, 824 44 Hudiksvall";
+
         public OrdersController(ShoppingCart shoppingCart, ApplicationDbContext context, IOrdersService ordersService)
         {
             _shoppingCart = shoppingCart;
@@ -82,25 +86,25 @@ namespace SkoButik_Client.Controllers
         }
 
         //Add item to shopping cart
-        public async Task<IActionResult> AddItemToShoppingCart(int id)
+        public async Task<IActionResult> AddItemToShoppingCart(int id, int sizeId)
         {
             var product = await _context.Products.FirstOrDefaultAsync(m => m.ProductId == id);
 
             if (product != null)
             {
-                _shoppingCart.AddItemToCart(product);
+                _shoppingCart.AddItemToCart(product, sizeId);
             }
             return RedirectToAction(nameof(ShoppingCart));
         }
 
         //Remove item from shopping cart
-        public async Task<IActionResult> RemoveItemFromShoppingCart(int id)
+        public async Task<IActionResult> RemoveItemFromShoppingCart(int id, int sizeId)
         {
             var product = await _context.Products.FirstOrDefaultAsync(m => m.ProductId == id);
 
             if (product != null)
             {
-                _shoppingCart.RemoveItemFromCart(product);
+                _shoppingCart.RemoveItemFromCart(product, sizeId);
             }
             return RedirectToAction(nameof(ShoppingCart));
         }
@@ -108,20 +112,58 @@ namespace SkoButik_Client.Controllers
 
 
         // CompleteOrder
+        //public async Task<IActionResult> CompleteOrder()
+        //{
+        //    if (!User.Identity.IsAuthenticated)
+        //    {
+        //        return RedirectToAction("NotLoggedIn");
+        //    }
+        //    var items = _shoppingCart.GetShoppingCartItems().ToList();
+
+        //    string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        //    await _ordersService.storeOrderAsync(items, userId);
+        //    await _shoppingCart.ClearShoppingCartAsync();
+        //    return View("OrderCompleted");
+
+        //}
+
         public async Task<IActionResult> CompleteOrder()
         {
             if (!User.Identity.IsAuthenticated)
             {
                 return RedirectToAction("NotLoggedIn");
             }
+
             var items = _shoppingCart.GetShoppingCartItems().ToList();
 
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            await _ordersService.storeOrderAsync(items, userId);
+            // Kontrollera att storleken för varje produkt finns i lagret
+            foreach (var item in items)
+            {
+                var inventoryItem = await _context.Inventories.FirstOrDefaultAsync(i => i.FkProductId == item.Product.ProductId && i.FkSizeId == item.Size.SizeId);
+
+                if (inventoryItem == null || inventoryItem.Quantity < item.Amount)
+                {
+                    ModelState.AddModelError("", $"Not enough stock for product {item.Product.ProductName} in size {item.Size?.SizeName}");
+                    return View("ShoppingCart", new ShoppingCartVM { ShoppingCart = _shoppingCart, ShoppingCartTotal = _shoppingCart.GetShoppingCartTotal() });
+                }
+            }
+
+            // Sparar ordern om alla storlekar finns i lagret
+            await _ordersService.StoreOrderAsync(items, userId);
+
+            // Uppdatera lagersaldot
+            foreach (var item in items)
+            {
+                var inventoryItem = await _context.Inventories.FirstOrDefaultAsync(i => i.FkProductId == item.Product.ProductId && i.FkSizeId == item.Size.SizeId);
+                inventoryItem.Quantity -= item.Amount;
+            }
+            await _context.SaveChangesAsync();
+
             await _shoppingCart.ClearShoppingCartAsync();
             return View("OrderCompleted");
-
         }
 
         // Action for NotLoggedIn view
@@ -233,7 +275,7 @@ namespace SkoButik_Client.Controllers
             {
                 using (var client = new HttpClient())
                 {
-                    var response = await client.GetStringAsync($"https://v6.exchangerate-api.com/v6/6e9a8cd53905eb9043c5f0ec/latest/SEK");
+                    var response = await client.GetStringAsync($"https://v6.exchangerate-api.com/v6/{_exchangeRateApiKey}/latest/SEK");
                     var rates = JObject.Parse(response)["conversion_rates"];
                     exchangeRate = rates[currency].Value<decimal>();
                 }
@@ -249,7 +291,7 @@ namespace SkoButik_Client.Controllers
             return View(model);
         }
 
-        public IActionResult OrderDetails(int id)
+        public async Task<IActionResult> OrderDetails(int id)
         {
             var order = _context.Orders
                 .Include(o => o.OrderItems)
@@ -265,14 +307,42 @@ namespace SkoButik_Client.Controllers
 
             var totalPrice = order.OrderItems.Sum(oi => oi.Amount * oi.Products.AdjustedPrice);
 
+            var destination = $"{order.ApplicationUser.Address}, {order.ApplicationUser.ZipCode} {order.ApplicationUser.City}";
+
+            var distance = await GetDistanceAsync(_origin, destination);
+
             var model = new OrderDetailsViewModel
             {
                 Order = order,
                 OrderedBy = order.ApplicationUser,
-                TotalPrice = totalPrice
+                TotalPrice = totalPrice,
+                Distance = distance
             };
 
             return View(model);
+        }
+
+        // Calculate distance between warehouse and customer
+        private static async Task<string> GetDistanceAsync(string origin, string destination)
+        {
+            using (var client = new HttpClient())
+            {
+                var originEncoded = Uri.EscapeDataString(origin);
+                var destinationEncoded = Uri.EscapeDataString(destination);
+
+                var url = $"https://maps.googleapis.com/maps/api/distancematrix/json?origins={originEncoded}&destinations={destinationEncoded}&key={_googleApiKey}";
+                var response = await client.GetStringAsync(url);
+                var data = JObject.Parse(response);
+
+                var element = data["rows"]?.FirstOrDefault()?["elements"]?.FirstOrDefault();
+                if (element?["status"]?.ToString() == "OK")
+                {
+                    var distance = element["distance"]?["text"]?.ToString();
+                    var duration = element["duration"]?["text"]?.ToString();
+                    return $"Distance: {distance}, Duration: {duration}";
+                }
+                return "Unable to calculate distance.";
+            }
         }
 
     }

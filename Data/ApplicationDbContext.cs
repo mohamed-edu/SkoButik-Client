@@ -18,15 +18,12 @@ namespace SkoButik_Client.Data
         public DbSet<Product> Products { get; set; }
         public DbSet<Size> Sizes { get; set; }
         public DbSet<Campaign> Campaigns { get; set; }
-
+        public DbSet<Inventory> Inventories { get; set; }
 
         //Order Part
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<ShoppingCartItem> ShoppingCartItems { get; set; }
-
-        //Inventory Part
-        //public DbSet<Inventory> Inventory { get; set; }
 
         //Contact
         public DbSet<Contact> Contact { get; set; }
@@ -60,9 +57,47 @@ namespace SkoButik_Client.Data
 
             //////////////////ÍNVENTORY//////////////////////////
 
+            // Inventory
+            modelBuilder.Entity<Inventory>()
+                .HasOne(i => i.Products)
+                .WithMany(p => p.Inventories)
+                .HasForeignKey(i => i.FkProductId)
+                .OnDelete(DeleteBehavior.Restrict); // Change to Restrict or NoAction
 
+            modelBuilder.Entity<Inventory>()
+                .HasOne(i => i.Sizes)
+                .WithMany(s => s.Inventories)
+                .HasForeignKey(i => i.FkSizeId)
+                .OnDelete(DeleteBehavior.Restrict); // Change to Restrict or NoAction
+
+            // ShoppingCartItem
+            modelBuilder.Entity<ShoppingCartItem>()
+                .HasOne(sci => sci.Product)
+                .WithMany(p => p.ShoppingCartItems)
+                .HasForeignKey(sci => sci.FkProductId)
+                .OnDelete(DeleteBehavior.Restrict); // Change to Restrict or NoAction
+
+            modelBuilder.Entity<ShoppingCartItem>()
+                .HasOne(sci => sci.Size)
+                .WithMany(s => s.ShoppingCartItems)
+                .HasForeignKey(sci => sci.FkSizeId)
+                .OnDelete(DeleteBehavior.Restrict); // Change to Restrict or NoAction
+
+            // OrderItem
+            modelBuilder.Entity<OrderItem>()
+                .HasOne(oi => oi.Products)
+                .WithMany(p => p.OrderItems)
+                .HasForeignKey(oi => oi.FkProductId)
+                .OnDelete(DeleteBehavior.Restrict); // Change to Restrict or NoAction
+
+            modelBuilder.Entity<OrderItem>()
+                .HasOne(oi => oi.Sizes)
+                .WithMany(s => s.OrderItems)
+                .HasForeignKey(oi => oi.FkSizeId)
+                .OnDelete(DeleteBehavior.Restrict); // Change to Restrict or NoAction
 
         }
 
     }
+        
 }

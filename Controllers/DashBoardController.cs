@@ -20,13 +20,14 @@ namespace SkoButik_Client.Controllers
             List<OrderItem> getAll = await _context.OrderItems.ToListAsync();
 
             // Calculate the total income
-            decimal CountIncome = getAll.Sum(j => j.Price);
+            decimal CountIncome = getAll.Sum(j => j.Price); // GÖR OM SÅ DEN RÄKNAR UT KAMPANJPRIS
 
             // Set the formatted income as a ViewBag property (if needed for display)
             ViewBag.CountIncome = CountIncome.ToString("C0");
 
             // Pass the raw income to the view
 
+            // SE ÖVER DENNA KOD. DEN RÄKNAR UT ANTAL PRODUKTER PER KÖP OCH SAMLAR EJ KÖP GJORDA SAMMA DAG.
             var purchasesData = await _context.OrderItems
                 .GroupBy(oi => oi.Orders.OrderDate)
                 .Select(g => new

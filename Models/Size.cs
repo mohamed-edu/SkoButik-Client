@@ -13,6 +13,8 @@ namespace SkoButik_Client.Models
         [DisplayName("Size")]
         public string SizeName {  get; set; }
 
-        public ICollection<Product>? Products { get; set;}
+        public ICollection<Inventory>? Inventories { get; set; }
+        public ICollection<ShoppingCartItem>? ShoppingCartItems { get; set; }
+        public ICollection<OrderItem> OrderItems { get; set; }
     }
 }

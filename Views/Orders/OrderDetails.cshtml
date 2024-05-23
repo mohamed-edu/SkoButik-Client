@@ -10,6 +10,8 @@
 <p><strong>Order Date:</strong> @Model.Order.OrderDate.ToShortDateString()</p>
 <p><strong>Total Price (SEK):</strong> @Model.TotalPrice</p>
 <p><strong>Ordered By:</strong> @Model.OrderedBy.FirstName @Model.OrderedBy.LastName</p>
+<p><strong>Customer Address:</strong> @Model.OrderedBy.Address, @Model.OrderedBy.ZipCode @Model.OrderedBy.City</p>
+<p><strong>Distance to Customer:</strong> @Model.Distance</p>
 
 <h3>Order Items</h3>
 
@@ -32,3 +34,7 @@
         }
     </tbody>
 </table>
+
+<div>
+    <a asp-action="OrderList">Back to List</a>
+</div>

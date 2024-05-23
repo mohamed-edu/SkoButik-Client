@@ -24,16 +24,27 @@
                     <div class="card-body">
                         <p class="card-text">@Model.Description</p>
                         <p class="card-text">
-                            <b>Size: </b>
-                            <select class="form-select" id="sizeSelect" asp-for="FkSizeId" asp-items="@ViewBag.Sizes">
-                                <option value="">-- Select Size --</option>
-                            </select>
-                        </p>
-                        <p class="card-text">
                             <b>Brand: </b>
                             @Model.Brand.BrandName
                         </p>
                         <p class="card-text" id="priceDisplay"><b>Price: </b>@Model.AdjustedPrice.ToString("c")</p>
+                        <p class="card-text">
+                            <b>Size: </b>
+                            @if (ViewBag.AvailableSizes != null && ViewBag.AvailableSizes.Count > 0)
+                            {
+                                <select id="sizeSelect" class="form-control">
+                                    <option value="">Select Size</option>
+                                    @foreach (var size in ViewBag.AvailableSizes)
+                                    {
+                                        <option value="@size.SizeId">@size.SizeName</option>
+                                    }
+                                </select>
+                            }
+                            else
+                            {
+                                <span>No sizes available</span>
+                            }
+                        </p>
                     </div>
                 </div>
                 <div class="col-md-12">
@@ -43,9 +54,6 @@
                                 Back to List
                             </a>
                             <a class="btn btn-success text-white" id="addToCartBtn"
-                               asp-controller="Orders"
-                               asp-action="AddItemToShoppingCart"
-                               asp-route-id="@Model.ProductId">
                                 <i class="bi bi-cart-plus"></i> Add to Cart
                             </a>
                         </p>
@@ -57,26 +65,22 @@
 </div>
 
 @section Scripts {
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function () {
-            $('#sizeSelect').change(function () {
-                var sizeId = $(this).val();
+            $('#addToCartBtn').click(function () {
                 var productId = '@Model.ProductId';
+                var sizeId = $('#sizeSelect').val();
 
                 $.ajax({
-                    url: '/Products/UpdateProductSize',
+                    url: '/Orders/AddItemToShoppingCart',
                     type: 'POST',
-                    data: { productId: productId, sizeId: sizeId },
+                    data: { id: productId, sizeId: sizeId },
                     success: function (response) {
-                        if (response.success) {
-                            // Optionally update the price or other details if needed
-                        } else {
-                            alert('Error updating product size: ' + response.message);
-                        }
+                        alert('Product added to cart');
+                        window.location.href = '/Orders/ShoppingCart';
                     },
                     error: function () {
-                        alert('Error updating product size');
+                        alert('Error adding product to cart');
                     }
                 });
             });
