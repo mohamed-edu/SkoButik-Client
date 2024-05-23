@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SkoButik_Client.Data;
 using SkoButik_Client.Data.Cart;
 using SkoButik_Client.Models;
+using SkoButik_Client.Utility;
 using SkoButik_Client.ViewModels;
 
 namespace SkoButik_Client.Controllers
@@ -102,6 +104,7 @@ namespace SkoButik_Client.Controllers
 
 
 
+        [Authorize(Roles = SD.Role_Admin)]
         // GET: Products/Create
         public IActionResult Create()
         {
@@ -120,6 +123,7 @@ namespace SkoButik_Client.Controllers
             return View(product);
         }
 
+        [Authorize(Roles = SD.Role_Admin)]
         // POST: Products/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -137,6 +141,7 @@ namespace SkoButik_Client.Controllers
             return View(product);
         }
 
+        [Authorize(Roles = SD.Role_Admin)]
         // GET: Products/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -156,6 +161,7 @@ namespace SkoButik_Client.Controllers
             return View(product);
         }
 
+        [Authorize(Roles = SD.Role_Admin)]
         // POST: Products/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -195,6 +201,7 @@ namespace SkoButik_Client.Controllers
         }
 
 
+        [Authorize(Roles = SD.Role_Admin)]
         // GET: Products/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -217,6 +224,7 @@ namespace SkoButik_Client.Controllers
             return View(product);
         }
 
+        [Authorize(Roles = SD.Role_Admin)]
         // POST: Products/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
