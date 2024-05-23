@@ -25,11 +25,14 @@
                             <i class="bi bi-list"></i> Orders
                         </a>
                     </li>
+                        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                        {
                     <li>
                         <a class="dropdown-item" asp-controller="Accounts" asp-action="Users">
                             <i class="bi bi-people"></i> Users
                         </a>
                     </li>
+                        }
                 </ul>
             </li>
             </div>

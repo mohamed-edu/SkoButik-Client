@@ -117,14 +117,16 @@
                                         <h5 class="card-title">
                                             @item.ProductName
                                             <br />
-                                            @* //Put in User admin role *@
-                                            <div class="d-flex justify-content-center">
-                                                <a class="text-white mx-2" asp-action="Edit" asp-route-id="@item.ProductId"><i class="bi bi-pencil-square" style="color: orange"></i></a>
+                                            @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                                            {
+                                                <div class="d-flex justify-content-center">
+                                                    <a class="text-white mx-2" asp-action="Edit" asp-route-id="@item.ProductId"><i class="bi bi-pencil-square" style="color: orange"></i></a>
 
-                                                <a class="text-white mx-2" asp-action="Create" asp-route-id="@item.ProductId"><i class="bi bi-hammer" style="color: orange"></i></a>
+                                                    <a class="text-white mx-2" asp-action="Create" asp-route-id="@item.ProductId"><i class="bi bi-hammer" style="color: orange"></i></a>
 
-                                                <a class="text-white mx-2" asp-action="Delete" asp-route-id="@item.ProductId"><i class="bi bi-trash3" style="color: orange"></i></a>
-                                            </div>
+                                                    <a class="text-white mx-2" asp-action="Delete" asp-route-id="@item.ProductId"><i class="bi bi-trash3" style="color: orange"></i></a>
+                                                </div>
+                                            }
                                         </h5>
                                     </p>
                                 </div>

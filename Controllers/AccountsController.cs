@@ -1,12 +1,15 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SkoButik_Client.Data;
 using SkoButik_Client.Models;
+using SkoButik_Client.Utility;
 using System;
 
 namespace SkoButik_Client.Controllers
 {
+    [Authorize(Roles = SD.Role_Admin)]
     public class AccountsController : Controller
     {
         private readonly ApplicationDbContext _context;

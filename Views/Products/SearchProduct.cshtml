@@ -5,64 +5,83 @@
 }
 
 
-<style>
-    /* //List */
-    .center-list {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-    }
+<<style>
+     /* //List */
+     .center-list {
+         display: flex;
+         flex-direction: column;
+         align-items: center;
+         text-align: center;
+     }
 
-    .list-group {
-        width: 100%; /* Optional: Adjust if you want the list items to take full width */
-    }
+     .list-group {
+         width: 100%; /* Optional: Adjust if you want the list items to take full width */
+     }
 
-        .list-group li a {
-            font-size: 1.4em; /* Increase the text size */
-            color: inherit; /* Inherit color defined in the inline styles */
-            text-decoration: none; /* Remove the underline */
-        }
+         .list-group li a {
+             font-size: 1.4em; /* Increase the text size */
+             color: inherit; /* Inherit color defined in the inline styles */
+             text-decoration: none; /* Remove the underline */
+         }
 
-        .list-group li {
-        }
+         .list-group li {
+         }
 
-    /* //Produc cards */
-    .fixed-size-card {
-        height: 570px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        padding: 3px;
-    }
+             .list-group li a img:hover {
+                 border: solid;
+                 border-color: #f8f9fa;
+                 font-size: 1.7em;
+             }
 
-    .fixed-size-img {
-        height: 320px;
-        width: 100%;
-        object-fit: cover;
-    }
+             .list-group li a:hover {
+                 font-size: 1.7em;
+             }
 
-    .card-body {
-        display: flex;
-        height: 70px;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-        flex: 1;
-        text-align: center;
-    }
 
-    .card-footer {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        background-color: white;
-    }
 
-        .card-footer a {
-            margin: 2px 0;
-        }
+     /* //Produc cards */
+     .fixed-size-card {
+         height: 590px;
+         display: flex;
+         flex-direction: column;
+         justify-content: space-between;
+         padding: 3px;
+     }
+
+     .fixed-size-img {
+         height: 320px;
+         width: 100%;
+         object-fit: cover;
+     }
+
+     .card-body {
+         display: flex;
+         height: 70px;
+         justify-content: center;
+         align-items: center;
+         flex-direction: column;
+         flex: 1;
+         text-align: center;
+     }
+
+     .card-footer {
+         display: flex;
+         flex-direction: column;
+         justify-content: center;
+         align-items: center;
+         background-color: white;
+     }
+
+         .card-footer a {
+             margin: 2px 0;
+         }
+
+     .brand-logo {
+         width: 100%;
+         height: 60px;
+         object-fit: contain;
+     }
+
 </style>
 
 
@@ -72,11 +91,18 @@
         <div class="center-list">
             <h3><i class="bi bi-filter-right"></i>Filter by Brands</h3>
             <ul class="list-group">
-                <li class="btn btn-outline-primary"><a asp-controller="Products" asp-action="Index" style="color:black;">All Products</a></li>
-                <li class="btn btn-outline-primary"><a asp-controller="ProductByBrand" asp-action="GetBrand" asp-route-brandName="Nike" style="color:black;">Nike</a></li>
-                <li class="btn btn-outline-primary"><a asp-controller="ProductByBrand" asp-action="GetBrand" asp-route-brandName="Adidas" style="color:black;">Adidas</a></li>
-                <li class="btn btn-outline-primary"><a asp-controller="ProductByBrand" asp-action="GetBrand" asp-route-brandName="Puma" style="color: black;">Puma</a></li>
-                <li class="btn btn-outline-primary"><a asp-controller="ProductByBrand" asp-action="GetBrand" asp-route-brandName="Vans" style="color: black;">Vans</a></li>
+                <li class="btn btn-light"><a asp-controller="Products" asp-action="Index" style="color:black;">All Products</a></li>
+                <br />
+                <li class="btn btn-light"><a asp-controller="ProductByBrand" asp-action="GetBrand" asp-route-brandName="Nike" style="color:black;"><img src="/images/pngwing.com.png" class="brand-logo"></a></li>
+                <br />
+                <li class="btn btn-light"><a asp-controller="ProductByBrand" asp-action="GetBrand" asp-route-brandName="Adidas" style="color:black;"><img src="/images/adidaslogo.png" class="brand-logo" /></a></li>
+                <br />
+                <li class="btn btn-light"><a asp-controller="ProductByBrand" asp-action="GetBrand" asp-route-brandName="Puma" style="color: black;"><img src="/images/pumalogo.png" class="brand-logo" /></a></li>
+                <br />
+                <li class="btn btn-light"><a asp-controller="ProductByBrand" asp-action="GetBrand" asp-route-brandName="Vans" style="color: black;"><img src="/images/vanslogo.png" class="brand-logo" /></a></li>
+                <br />
+                <br />
+                <li class="btn btn-warning  fs-3"><a asp-controller="Products" asp-action="CampaignProducts" style="color: orangered; font-weight:700;">Sale</a></li>
             </ul>
         </div>
     </div>
@@ -94,14 +120,16 @@
                                         <h5 class="card-title">
                                             @item.ProductName
                                             <br />
-                                            @* //Put in User admin role *@
-                                            <div class="d-flex justify-content-center">
-                                                <a class="text-white mx-2  asp-action="Edit" asp-route-id="@item.ProductId"><i class="bi bi-pencil-square" style="color: orange"></i></a>
+                                            @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                                            {
+                                                <div class="d-flex justify-content-center">
+                                                    <a class="text-white mx-2" asp-action="Edit" asp-route-id="@item.ProductId"><i class="bi bi-pencil-square" style="color: orange"></i></a>
 
-                                                <a class="text-white mx-2" asp-action="Create" asp-route-id="@item.ProductId"><i class="bi bi-hammer" style="color: orange"></i></a>
+                                                    <a class="text-white mx-2" asp-action="Create" asp-route-id="@item.ProductId"><i class="bi bi-hammer" style="color: orange"></i></a>
 
-                                                <a class="text-white mx-2" asp-action="Delete" asp-route-id="@item.ProductId"><i class="bi bi-trash3" style="color: orange"></i></a>
-                                            </div>
+                                                    <a class="text-white mx-2" asp-action="Delete" asp-route-id="@item.ProductId"><i class="bi bi-trash3" style="color: orange"></i></a>
+                                                </div>
+                                            }
                                         </h5>
                                     </p>
                                 </div>
@@ -118,9 +146,24 @@
                             </div>
                             <div class="col-md-12">
                                 <div class="card-footer">
-                                    <div class="text">
-                                        Price @item.Price.ToString("c")
-                                    </div>
+                                    @if (item.FkCampaignId >= 2)
+                                    {
+                                        <div class="text" style="color: red">
+                                            <i class="bi bi-tag-fill"></i> Price @item.AdjustedPrice.ToString("c")
+                                        </div>
+                                        <div class="text" style="font-size: small">
+                                            (Original price @item.Price.ToString("c"))
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="text">
+                                            Price @item.AdjustedPrice.ToString("c")
+                                        </div>
+                                    }
+                                    @*                                     <div class="text">
+                                Price @item.AdjustedPrice.ToString("c")
+                                </div> *@
                                     <a class="btn btn-outline-info" asp-action="Details" asp-route-id="@item.ProductId">
                                         <i class="bi bi-eye-fill"></i> Show Details
                                     </a>
