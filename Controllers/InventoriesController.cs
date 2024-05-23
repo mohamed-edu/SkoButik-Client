@@ -13,22 +13,23 @@ using SkoButik_Client.Utility;
 namespace SkoButik_Client.Controllers
 {
     [Authorize(Roles = SD.Role_Admin)]
-    public class BrandsController : Controller
+    public class InventoriesController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public BrandsController(ApplicationDbContext context)
+        public InventoriesController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Brands
+        // GET: Inventories
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Brands.ToListAsync());
+            var applicationDbContext = _context.Inventories.Include(i => i.Products).Include(i => i.Sizes);
+            return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: Brands/Details/5
+        // GET: Inventories/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -36,39 +37,45 @@ namespace SkoButik_Client.Controllers
                 return NotFound();
             }
 
-            var brand = await _context.Brands
-                .FirstOrDefaultAsync(m => m.BrandId == id);
-            if (brand == null)
+            var inventory = await _context.Inventories
+                .Include(i => i.Products)
+                .Include(i => i.Sizes)
+                .FirstOrDefaultAsync(m => m.InventoryId == id);
+            if (inventory == null)
             {
                 return NotFound();
             }
 
-            return View(brand);
+            return View(inventory);
         }
 
-        // GET: Brands/Create
+        // GET: Inventories/Create
         public IActionResult Create()
         {
+            ViewData["FkProductId"] = new SelectList(_context.Products, "ProductId", "ProductName");
+            ViewData["FkSizeId"] = new SelectList(_context.Sizes, "SizeId", "SizeName");
             return View();
         }
 
-        // POST: Brands/Create
+        // POST: Inventories/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("BrandId,BrandName")] Brand brand)
+        public async Task<IActionResult> Create([Bind("InventoryId,FkProductId,FkSizeId,Quantity")] Inventory inventory)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(brand);
+                _context.Add(inventory);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(brand);
+            ViewData["FkProductId"] = new SelectList(_context.Products, "ProductId", "ProductName", inventory.FkProductId);
+            ViewData["FkSizeId"] = new SelectList(_context.Sizes, "SizeId", "SizeName", inventory.FkSizeId);
+            return View(inventory);
         }
 
-        // GET: Brands/Edit/5
+        // GET: Inventories/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -76,22 +83,24 @@ namespace SkoButik_Client.Controllers
                 return NotFound();
             }
 
-            var brand = await _context.Brands.FindAsync(id);
-            if (brand == null)
+            var inventory = await _context.Inventories.FindAsync(id);
+            if (inventory == null)
             {
                 return NotFound();
             }
-            return View(brand);
+            ViewData["FkProductId"] = new SelectList(_context.Products, "ProductId", "ProductName", inventory.FkProductId);
+            ViewData["FkSizeId"] = new SelectList(_context.Sizes, "SizeId", "SizeName", inventory.FkSizeId);
+            return View(inventory);
         }
 
-        // POST: Brands/Edit/5
+        // POST: Inventories/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("BrandId,BrandName")] Brand brand)
+        public async Task<IActionResult> Edit(int id, [Bind("InventoryId,FkProductId,FkSizeId,Quantity")] Inventory inventory)
         {
-            if (id != brand.BrandId)
+            if (id != inventory.InventoryId)
             {
                 return NotFound();
             }
@@ -100,12 +109,12 @@ namespace SkoButik_Client.Controllers
             {
                 try
                 {
-                    _context.Update(brand);
+                    _context.Update(inventory);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!BrandExists(brand.BrandId))
+                    if (!InventoryExists(inventory.InventoryId))
                     {
                         return NotFound();
                     }
@@ -116,10 +125,12 @@ namespace SkoButik_Client.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(brand);
+            ViewData["FkProductId"] = new SelectList(_context.Products, "ProductId", "ProductName", inventory.FkProductId);
+            ViewData["FkSizeId"] = new SelectList(_context.Sizes, "SizeId", "SizeName", inventory.FkSizeId);
+            return View(inventory);
         }
 
-        // GET: Brands/Delete/5
+        // GET: Inventories/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -127,34 +138,36 @@ namespace SkoButik_Client.Controllers
                 return NotFound();
             }
 
-            var brand = await _context.Brands
-                .FirstOrDefaultAsync(m => m.BrandId == id);
-            if (brand == null)
+            var inventory = await _context.Inventories
+                .Include(i => i.Products)
+                .Include(i => i.Sizes)
+                .FirstOrDefaultAsync(m => m.InventoryId == id);
+            if (inventory == null)
             {
                 return NotFound();
             }
 
-            return View(brand);
+            return View(inventory);
         }
 
-        // POST: Brands/Delete/5
+        // POST: Inventories/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var brand = await _context.Brands.FindAsync(id);
-            if (brand != null)
+            var inventory = await _context.Inventories.FindAsync(id);
+            if (inventory != null)
             {
-                _context.Brands.Remove(brand);
+                _context.Inventories.Remove(inventory);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool BrandExists(int id)
+        private bool InventoryExists(int id)
         {
-            return _context.Brands.Any(e => e.BrandId == id);
+            return _context.Inventories.Any(e => e.InventoryId == id);
         }
     }
 }

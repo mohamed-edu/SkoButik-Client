@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SkoButik_Client.Data;
 using SkoButik_Client.Models;
+using SkoButik_Client.Utility;
 
 namespace SkoButik_Client.Controllers
 {
+    [Authorize(Roles = SD.Role_Admin)]
     public class DashBoardController : Controller
     {
         private readonly ApplicationDbContext _context;

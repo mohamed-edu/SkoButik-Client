@@ -2,14 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SkoButik_Client.Data;
 using SkoButik_Client.Models;
+using SkoButik_Client.Utility;
 
 namespace SkoButik_Client.Controllers
 {
+    [Authorize(Roles = SD.Role_Admin)]
     public class SizesController : Controller
     {
         private readonly ApplicationDbContext _context;
