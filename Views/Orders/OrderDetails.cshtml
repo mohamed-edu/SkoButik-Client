@@ -19,15 +19,18 @@
     <thead>
         <tr>
             <th>Product Name</th>
-            <th>Quantity</th>
+            <th>Size</th>
+            <th>Quantity</th>            
             <th>Price (SEK)</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model.Order.OrderItems)
         {
+            var inventory = item.Products.Inventories.FirstOrDefault(i => i.FkSizeId == item.FkSizeId);
             <tr>
                 <td>@item.Products.ProductName</td>
+                <td>@inventory.Sizes.SizeName</td>
                 <td>@item.Amount</td>
                 <td>@(item.Amount * item.Products.AdjustedPrice)</td>
             </tr>
@@ -37,4 +40,4 @@
 
 <div>
     <a asp-action="OrderList">Back to List</a>
-</div>
+</div>  
