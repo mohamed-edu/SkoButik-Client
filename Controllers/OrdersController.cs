@@ -140,27 +140,27 @@ namespace SkoButik_Client.Controllers
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             // Kontrollera att storleken för varje produkt finns i lagret
-            foreach (var item in items)
-            {
-                var inventoryItem = await _context.Inventories.FirstOrDefaultAsync(i => i.FkProductId == item.Product.ProductId && i.FkSizeId == item.Size.SizeId);
+            //foreach (var item in items)
+            //{
+            //    var inventoryItem = await _context.Inventories.FirstOrDefaultAsync(i => i.FkProductId == item.Product.ProductId && i.FkSizeId == item.Size.SizeId);
 
-                if (inventoryItem == null || inventoryItem.Quantity < item.Amount)
-                {
-                    ModelState.AddModelError("", $"Not enough stock for product {item.Product.ProductName} in size {item.Size?.SizeName}");
-                    return View("ShoppingCart", new ShoppingCartVM { ShoppingCart = _shoppingCart, ShoppingCartTotal = _shoppingCart.GetShoppingCartTotal() });
-                }
-            }
+            //    if (inventoryItem == null || inventoryItem.Quantity < item.Amount)
+            //    {
+            //        ModelState.AddModelError("", $"Not enough stock for product {item.Product.ProductName} in size {item.Size?.SizeName}");
+            //        return View("ShoppingCart", new ShoppingCartVM { ShoppingCart = _shoppingCart, ShoppingCartTotal = _shoppingCart.GetShoppingCartTotal() });
+            //    }
+            //}
 
             // Sparar ordern om alla storlekar finns i lagret
             await _ordersService.StoreOrderAsync(items, userId);
 
             // Uppdatera lagersaldot
-            foreach (var item in items)
-            {
-                var inventoryItem = await _context.Inventories.FirstOrDefaultAsync(i => i.FkProductId == item.Product.ProductId && i.FkSizeId == item.Size.SizeId);
-                inventoryItem.Quantity -= item.Amount;
-            }
-            await _context.SaveChangesAsync();
+            //foreach (var item in items)
+            //{
+            //    var inventoryItem = await _context.Inventories.FirstOrDefaultAsync(i => i.FkProductId == item.Product.ProductId && i.FkSizeId == item.Size.SizeId);
+            //    inventoryItem.Quantity -= item.Amount;
+            //}
+            //await _context.SaveChangesAsync();
 
             await _shoppingCart.ClearShoppingCartAsync();
             return View("OrderCompleted");
@@ -297,6 +297,10 @@ namespace SkoButik_Client.Controllers
                 .Include(o => o.OrderItems)
                     .ThenInclude(oi => oi.Products)
                     .ThenInclude(oi => oi.Campaign)
+                .Include(o => o.OrderItems)
+                    .ThenInclude(oi => oi.Products)
+                        .ThenInclude(p => p.Inventories)
+                            .ThenInclude(i => i.Sizes)
                 .Include(o => o.ApplicationUser)
                 .FirstOrDefault(o => o.OrderId == id);
 

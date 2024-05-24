@@ -14,11 +14,12 @@ namespace SkoButik_Client.Data.Services
         {
             return await _context.Orders
                 .Where(o => o.UserId == userId)
-                .Include(o => o.ApplicationUser) // Include ApplicationUser to fetch user details
+                .Include(o => o.ApplicationUser)
                 .Include(o => o.OrderItems)
-                .ThenInclude(oi => oi.Products) // Include Products within OrderItems
+                .ThenInclude(oi => oi.Products)
                 .ThenInclude(oi => oi.Campaign)
-                .Include(i => i.OrderItems)
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Sizes)
                 .ToListAsync();
         }
 
@@ -34,10 +35,10 @@ namespace SkoButik_Client.Data.Services
 
             foreach (var item in items)
             {
-                var size = await _context.Inventories
-                    .Where(i => i.FkProductId == item.Product.ProductId)
-                    .Select(i => i.Sizes)
-                    .FirstOrDefaultAsync();
+                //var size = await _context.Inventories
+                //    .Where(i => i.FkProductId == item.Product.ProductId)
+                //    .Select(i => i.Sizes)
+                //    .FirstOrDefaultAsync();
 
 
                 var orderItem = new OrderItem()
@@ -46,7 +47,7 @@ namespace SkoButik_Client.Data.Services
                     FkProductId = item.Product.ProductId,
                     FkOrderId = order.OrderId,
                     Price = item.Product.AdjustedPrice,
-                    Sizes = size
+                    FkSizeId = item.Size.SizeId
 
                 };
                 await _context.OrderItems.AddAsync(orderItem);
