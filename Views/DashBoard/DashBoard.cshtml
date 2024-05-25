@@ -1,148 +1,249 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-
-
+﻿@using SkoButik_Client.Data.ViewModels
+@model AdminDashboardViewModel
 @{
-    ViewBag.Title = "Dashboard";
+    ViewData["Title"] = "Admin Dashboard";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container-fluid">
+<div class="container mt-5">
+    <h1 class="mb-4">Welcome Admin</h1>
+
     <div class="row">
-            <!-- Side filter for brands -->
-            <div class="col-md-2">
-                <div class="center-list">
-                    <h3><i class="bi bi-filter-right"></i>Admin Menu</h3>
-                    <ul class="list-group">
-                    <li><a asp-controller="DashBoard" asp-action="DashBoard" style="color: black; text-decoration:none;">Admin Page</a></li>
-                    <li><a asp-controller="Orders" asp-action="OrderStats" style="color: black; text-decoration:none;">Order statistics</a></li>
-                    <li><a asp-controller="Orders" asp-action="MostSold" style="color: black; text-decoration:none;">Most sold product</a></li>
-                    <li><a asp-controller="Orders" asp-action="OrderList" style="color: black; text-decoration:none;">All orders</a></li>
-                    <li><a asp-controller="Accounts" asp-action="Users" style="color: black; text-decoration:none;">Registered users</a></li>
-                    </ul>
+        <!-- Total Income -->
+        <div class="col-md-3">
+            <div class="card bg-light text-black mb-4">
+                <div class="card-body">
+                    <span class="lead">Total Income</span>
+                    <h1 class="display-6 fw-bold">@ViewBag.CountIncome</h1>
                 </div>
             </div>
-
-        <!-- Main Content -->
-        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                <h1 class="h2">Dashboard</h1>
+        </div>
+        <!-- Today's Income -->
+        <div class="col-md-3">
+            <div class="card bg-light text-black mb-4">
+                <div class="card-body">
+                    <span class="lead">Today's Income</span>
+                    <h1 class="display-6 fw-bold">@ViewBag.TodayIncome</h1>
+                </div>
             </div>
+        </div>
+        <!-- Most Sold Product -->
+        <div class="col-md-6">
+            <div class="card bg-light text-black mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Most Sold Product (Last 7 Days)</h5>
+                    @if (Model.MostSoldProduct != null)
+                    {
+                        <div class="d-flex align-items-center">
+                            <img src="@Model.MostSoldProduct.ImageUrl" class="img-thumbnail" alt="@Model.MostSoldProduct.ProductName" style="width: 100px;">
+                            <div class="ml-3">
+                                <h6>@Model.MostSoldProduct.ProductName</h6>
+                                <p>Quantity Sold: @Model.MostSoldProduct.TotalQuantity</p>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <p>No data available.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
 
-            <div class="row mb-4">
-                <div class="d-flex flex-row widget summary income green-transparent-bg">
-                    <div class="d-flex flex-column justify-content-center p-5">
-                        <i class="fa-solid fa-dollar-sign fa-2xl"></i>
-                    </div>
-                    <div class="d-flex flex-column m-auto py-3">
-                        <span class="lead">Total Income</span>
-                        <h1 class="display-6 fw-bold">@ViewBag.CountIncome</h1>
+    <div class="row">
+
+        <!-- Stacked Bar Chart -->
+        <div class="col-md-6 ">
+            <div class="card bg-light text-black mb-4">
+                <div class="card-body">
+                    <h5 class="card-title" style="text-align:center">Sold Amount Per Day</h5>
+                    <canvas id="stackedBarChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Orders -->
+        <div class="col-6">
+            <div class="card bg-light text-black mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Recent Orders</h5>
+                    <div class="table-container" style="height: 230px; overflow-y:scroll;">
+                    <table class="table table-light table-striped">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Order Date</th>
+                                <th>Total Price</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var order in Model.Orders)
+                            {
+                                <tr>
+                                    <td>@order.OrderId</td>
+                                    <td>@order.OrderDate.ToShortDateString()</td>
+                                    <td>@order.OrderItems.Sum(oi => oi.Amount * oi.Price)</td>
+                                    <td>
+                                        <a href="@Url.Action("OrderDetails", "Orders", new { id = order.OrderId })" class="btn btn-primary">View Details</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
                     </div>
                 </div>
             </div>
-
-            <div id="lineChartContainer">
-                <canvas id="lineChart"></canvas>
+        </div>
+        <!-- campaign table -->
+        <div class="col-md-9">
+            <div class="card bg-light text-black mb-4">
+                <div class="card-body">
+                    <h2>Campaign Information</h2>
+                    <div class="table-container" style="height: 230px; overflow-y:scroll;">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>CampainName</th>
+                                    <th>Start Date</th>
+                                    <th>End Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var campaign in ViewBag.Campaigns)
+                                {
+                                    <tr>
+                                        <td>@campaign.CampaignName</td>
+                                        <td>@campaign.StartDate.ToShortDateString()</td>
+                                        <td>@campaign.EndDate.ToShortDateString()</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
-        </main>
+        </div>
+
+        <!-- Donut Chart -->
+        <div class="col-md-3">
+            <div class="card bg-light text-black mb-4">
+                <div class="card-body">
+                    <h5 class="card-title" style="text-align:center">Brand quantity in stock</h5>
+                    <canvas id="donutChart"></canvas>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
 <style>
-    .center-list {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-    }
-
-    .list-group {
-        width: 100%; /* Optional: Adjust if you want the list items to take full width */
-    }
-
-    .list-group li a {
-        font-size: 1.4em; /* Increase the text size */
-        color: inherit; /* Inherit color defined in the inline styles */
-        text-decoration: none; /* Remove the underline */
-    }
-    #lineChartContainer {
-        position: absolute;
-        left: 35%;
-        right:15%;
-        bottom: 5%;
-        width: 50%;
-        height: 50%;
-    }
-
-    #lineChart {
+    #stackedBarChart, #donutChart {
         width: 100%;
-        height: 100%;
-    }
-
-    body {
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-        margin: 0;
-    }
-
-    .content {
-        flex: 1;
-    }
-
-    footer {
-        text-align: center;
-        background-color: #f8f9fa;
-        padding: 10px 0;
-        margin-top: auto;
-    }
-
-    .green-transparent-bg {
-        background-color: rgba(0, 128, 0, 0.2);
-        border-radius: 5px; 
-        padding: 20px; 
-
+        height: 400px;
     }
 </style>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        var ctx = document.getElementById('lineChart').getContext('2d');
-        var lineChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.Dates)),
-                datasets: [{
-                    label: 'Daily Purchases',
-                    data: @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.Amounts)),
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    borderWidth: 1,
-                    fill: true
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    x: {
-                        display: true,
-                        title: {
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Stacked Bar Chart
+        document.addEventListener("DOMContentLoaded", function () {
+            var ctx = document.getElementById('stackedBarChart').getContext('2d');
+
+            var dates = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.Dates));
+            var productAmounts = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.ProductAmounts));
+
+            // Aggregate product amounts for each day into a single dataset
+            var aggregatedAmounts = dates.map(function (date, index) {
+                return Object.values(productAmounts).reduce(function (sum, amounts) {
+                    return sum + amounts[index];
+                }, 0);
+            });
+
+            var dataset = {
+                label: 'Daily sold',
+                data: aggregatedAmounts,
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            };
+
+            var stackedBarChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: dates,
+                    datasets: [dataset]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
                             display: true,
-                            text: 'Date'
-                        }
-                    },
-                    y: {
-                        display: true,
-                        title: {
+                            title: {
+                                display: true,
+                                text: 'Date'
+                            },
+                            stacked: true
+                        },
+                        y: {
                             display: true,
-                            text: 'Purchases'
+                            title: {
+                                display: true,
+                                text: 'Sold Amount'
+                            },
+                            stacked: true
                         }
                     }
                 }
-            }
+            });
         });
-    });
-</script>
 
 
+        // Donut Chart
+        document.addEventListener("DOMContentLoaded", function () {
+            var ctxDonut = document.getElementById('donutChart').getContext('2d');
+
+            var brands = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.Brands));
+            var quantities = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.Quantities));
+
+            var colors = [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)'
+            ];
+            var borderColors = [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)'
+            ];
+
+            var donutChart = new Chart(ctxDonut, {
+                type: 'doughnut',
+                data: {
+                    labels: brands,
+                    datasets: [{
+                        label: 'Inventory by Brand',
+                        data: quantities,
+                        backgroundColor: colors,
+                        borderColor: borderColors,
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+}
