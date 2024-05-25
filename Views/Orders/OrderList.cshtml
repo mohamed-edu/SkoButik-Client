@@ -23,25 +23,33 @@
     </div>
 </form>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Order Number</th>
-            <th>Order Date</th>
-            <th>Total Price (@Model.SelectedCurrency)</th>
-            <th>Details</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var order in Model.Orders)
-        {
-            var totalPrice = order.OrderItems.Sum(oi => oi.Amount * oi.Products.AdjustedPrice) * Model.ExchangeRate;
-            <tr>
-                <td>@order.OrderId</td>
-                <td>@order.OrderDate.ToShortDateString()</td>
-                <td>@totalPrice.ToString("F2")</td>
-                <td><a asp-action="OrderDetails" asp-route-id="@order.OrderId">Details</a></td>
-            </tr>
-        }
-    </tbody>
-</table>
+<div class="col-12">
+    <div class="card bg-light text-black mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Recent Orders</h5>
+                <table class="table table-light table-striped">
+                    <thead>
+                        <tr>
+                            <th>Order Number</th>
+                            <th>Order Date</th>
+                            <th>Total Price (@Model.SelectedCurrency)</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var order in Model.Orders)
+                        {
+                            var totalPrice = order.OrderItems.Sum(oi => oi.Amount * oi.Products.AdjustedPrice) * Model.ExchangeRate;
+                            <tr>
+                                <td>@order.OrderId</td>
+                                <td>@order.OrderDate.ToShortDateString()</td>
+                                <td>@totalPrice.ToString("F2")</td>
+                            <td><a asp-action="OrderDetails" asp-route-id="@order.OrderId" class="btn btn-primary">Details</a></td>
+                            </tr>
+                        }
+                    </tbody>
+            </table>
+        </div>
+    </div>
+ </div>
+</>
