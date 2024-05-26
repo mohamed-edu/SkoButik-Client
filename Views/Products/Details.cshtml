@@ -45,6 +45,7 @@
                                 <span>No sizes available</span>
                             }
                         </p>
+                        <p class="card-text text-danger" id="sizeError" style="display:none;">Please select a size.</p>
                     </div>
                 </div>
                 <div class="col-md-12">
@@ -53,9 +54,9 @@
                             <a class="btn btn-outline-primary float-right" asp-action="Index">
                                 Back to List
                             </a>
-                            <a class="btn btn-success text-white" id="addToCartBtn"
+                            <button class="btn btn-success text-white" id="addToCartBtn">
                                 <i class="bi bi-cart-plus"></i> Add to Cart
-                            </a>
+                            </button>
                         </p>
                     </div>
                 </div>
@@ -67,23 +68,72 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
+            $('#sizeSelect').change(function () {
+                var sizeId = $(this).val();
+                var productId = '@Model.ProductId';
+
+                if (sizeId) {
+                    $.ajax({
+                        url: '/Orders/CheckInventoryStatus',
+                        type: 'GET',
+                        data: { productId: productId, sizeId: sizeId },
+                        success: function (response) {
+                            if (response.status === "available") {
+                                $('#sizeError').hide();
+                                $('#addToCartBtn').prop('disabled', false);
+                            } else {
+                                $('#sizeError').text('Out of stock for selected size').show();
+                                $('#addToCartBtn').prop('disabled', true);
+                            }
+                        },
+                        error: function () {
+                            alert('Error checking inventory');
+                        }
+                    });
+                }
+            });
+
             $('#addToCartBtn').click(function () {
                 var productId = '@Model.ProductId';
                 var sizeId = $('#sizeSelect').val();
 
+                if (!sizeId) {
+                    $('#sizeError').text('Please select a size.').show();
+                    return;
+                }
+
+                $.ajax({
+                    url: '/Orders/CheckInventoryBeforeAddingToCart',
+                    type: 'GET',
+                    data: { productId: productId, sizeId: sizeId },
+                    success: function (response) {
+                        if (response.canAddToCart) {
+                            addToCart(productId, sizeId);
+                            $('#addToCartBtn').prop('disabled', false);
+                        } else {
+                            $('#sizeError').text('Not enough in stock.').show();
+                            $('#addToCartBtn').prop('disabled', true);
+                        }
+                    },
+                    error: function () {
+                        alert('Error checking inventory before adding to cart');
+                    }
+                });
+            });
+
+            function addToCart(productId, sizeId) {
                 $.ajax({
                     url: '/Orders/AddItemToShoppingCart',
                     type: 'POST',
                     data: { id: productId, sizeId: sizeId },
                     success: function (response) {
-                        alert('Product added to cart');
                         window.location.href = '/Orders/ShoppingCart';
                     },
                     error: function () {
                         alert('Error adding product to cart');
                     }
                 });
-            });
+            }
         });
     </script>
 }

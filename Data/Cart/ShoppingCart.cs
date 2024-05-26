@@ -53,14 +53,6 @@ namespace SkoButik_Client.Data.Cart
                 shoppingCartItem.Amount++;
             }
 
-            var inventoryItem = _context.Inventories.FirstOrDefault(i => i.FkProductId == product.ProductId && i.FkSizeId == sizeId);
-            if (inventoryItem == null || inventoryItem.Quantity < shoppingCartItem.Amount)
-            {
-                throw new Exception($"Not enough stock for product {product.ProductName} in size {inventoryItem.Sizes?.SizeName}");
-            }
-
-            inventoryItem.Quantity -= shoppingCartItem.Amount;
-
             _context.SaveChanges();
         }
 
@@ -97,9 +89,9 @@ namespace SkoButik_Client.Data.Cart
                 {
                     ShoppingCartItemId = item.ShoppingCartItemId,
                     FkProductId = item.FkProductId,
-                    Product = item.Product, // Keep the product reference
-                    FkSizeId = item.FkSizeId, // Keep the size ID
-                    Size = _context.Inventories // Fetch the size information from inventory
+                    Product = item.Product,
+                    FkSizeId = item.FkSizeId,
+                    Size = _context.Inventories
                         .Where(i => i.FkProductId == item.FkProductId && i.FkSizeId == item.FkSizeId)
                         .Select(i => i.Sizes)
                         .FirstOrDefault(),

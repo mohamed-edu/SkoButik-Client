@@ -35,18 +35,17 @@ namespace SkoButik_Client.Data.Services
 
             foreach (var item in items)
             {
-                //var size = await _context.Inventories
-                //    .Where(i => i.FkProductId == item.Product.ProductId)
-                //    .Select(i => i.Sizes)
-                //    .FirstOrDefaultAsync();
 
+                var product = await _context.Products
+                                            .Include(p => p.Campaign)
+                                            .FirstOrDefaultAsync(p => p.ProductId == item.Product.ProductId);
 
                 var orderItem = new OrderItem()
                 {
                     Amount = item.Amount,
                     FkProductId = item.Product.ProductId,
                     FkOrderId = order.OrderId,
-                    Price = item.Product.AdjustedPrice,
+                    Price = product.AdjustedPrice,
                     FkSizeId = item.Size.SizeId
 
                 };
