@@ -109,25 +109,46 @@ namespace SkoButik_Client.Controllers
             return RedirectToAction(nameof(ShoppingCart));
         }
 
+        // Check inventory status
+        [HttpGet]
+        public async Task<IActionResult> CheckInventoryStatus(int productId, int sizeId)
+        {
+            var inventoryItem = await _context.Inventories.FirstOrDefaultAsync(i => i.FkProductId == productId && i.FkSizeId == sizeId);
+            if (inventoryItem != null && inventoryItem.Quantity > 0)
+            {
+                return Ok(new { status = "available", quantity = inventoryItem.Quantity });
+            }
+            else
+            {
+                return Ok(new { status = "out_of_stock", quantity = 0 });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> CheckInventoryBeforeAddingToCart(int productId, int sizeId)
+        {
+            var cartItemCountForSize = _shoppingCart.GetShoppingCartItems().Where(item => item.FkProductId == productId && item.FkSizeId == sizeId).Sum(item => item.Amount);
+            var inventoryItem = await _context.Inventories.FirstOrDefaultAsync(i => i.FkProductId == productId && i.FkSizeId == sizeId);
+
+            if (inventoryItem != null && inventoryItem.Quantity - cartItemCountForSize > 0)
+            {
+                return Ok(new { canAddToCart = true });
+            }
+            else
+            {
+                return Ok(new { canAddToCart = false });
+            }
+        }
+
+        [HttpGet]
+        public IActionResult GetCartItemCount()
+        {
+            var cartItemCount = _shoppingCart.GetShoppingCartItems().Sum(item => item.Amount);
+            return Ok(new { cartItemCount });
+        }
 
 
-        // CompleteOrder
-        //public async Task<IActionResult> CompleteOrder()
-        //{
-        //    if (!User.Identity.IsAuthenticated)
-        //    {
-        //        return RedirectToAction("NotLoggedIn");
-        //    }
-        //    var items = _shoppingCart.GetShoppingCartItems().ToList();
-
-        //    string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-        //    await _ordersService.storeOrderAsync(items, userId);
-        //    await _shoppingCart.ClearShoppingCartAsync();
-        //    return View("OrderCompleted");
-
-        //}
-
+        // Complete order
         public async Task<IActionResult> CompleteOrder()
         {
             if (!User.Identity.IsAuthenticated)
@@ -139,28 +160,26 @@ namespace SkoButik_Client.Controllers
 
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            // Kontrollera att storleken för varje produkt finns i lagret
-            //foreach (var item in items)
-            //{
-            //    var inventoryItem = await _context.Inventories.FirstOrDefaultAsync(i => i.FkProductId == item.Product.ProductId && i.FkSizeId == item.Size.SizeId);
+            foreach (var item in items)
+            {
+                var inventoryItem = await _context.Inventories.FirstOrDefaultAsync(i => i.FkProductId == item.Product.ProductId && i.FkSizeId == item.Size.SizeId);
 
-            //    if (inventoryItem == null || inventoryItem.Quantity < item.Amount)
-            //    {
-            //        ModelState.AddModelError("", $"Not enough stock for product {item.Product.ProductName} in size {item.Size?.SizeName}");
-            //        return View("ShoppingCart", new ShoppingCartVM { ShoppingCart = _shoppingCart, ShoppingCartTotal = _shoppingCart.GetShoppingCartTotal() });
-            //    }
-            //}
+                if (inventoryItem == null || inventoryItem.Quantity < item.Amount)
+                {
+                    ModelState.AddModelError("", $"Not enough stock for product {item.Product.ProductName} in size {item.Size?.SizeName}");
+                    return View("ShoppingCart", new ShoppingCartVM { ShoppingCart = _shoppingCart, ShoppingCartTotal = _shoppingCart.GetShoppingCartTotal() });
+                }
+            }
 
-            // Sparar ordern om alla storlekar finns i lagret
             await _ordersService.StoreOrderAsync(items, userId);
 
-            // Uppdatera lagersaldot
-            //foreach (var item in items)
-            //{
-            //    var inventoryItem = await _context.Inventories.FirstOrDefaultAsync(i => i.FkProductId == item.Product.ProductId && i.FkSizeId == item.Size.SizeId);
-            //    inventoryItem.Quantity -= item.Amount;
-            //}
-            //await _context.SaveChangesAsync();
+
+            foreach (var item in items)
+            {
+                var inventoryItem = await _context.Inventories.FirstOrDefaultAsync(i => i.FkProductId == item.Product.ProductId && i.FkSizeId == item.Size.SizeId);
+                inventoryItem.Quantity -= item.Amount;
+            }
+            await _context.SaveChangesAsync();
 
             await _shoppingCart.ClearShoppingCartAsync();
             return View("OrderCompleted");

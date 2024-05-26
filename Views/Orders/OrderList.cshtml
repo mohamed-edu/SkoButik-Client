@@ -39,7 +39,7 @@
                     <tbody>
                         @foreach (var order in Model.Orders)
                         {
-                            var totalPrice = order.OrderItems.Sum(oi => oi.Amount * oi.Products.AdjustedPrice) * Model.ExchangeRate;
+                            var totalPrice = order.OrderItems.Sum(oi => oi.Amount * oi.Price) * Model.ExchangeRate;
                             <tr>
                                 <td>@order.OrderId</td>
                                 <td>@order.OrderDate.ToShortDateString()</td>

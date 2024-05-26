@@ -253,11 +253,11 @@ namespace SkoButik_Client.Controllers
                 return Problem("Entity set 'MvcProductContext.Products' is null or empty.");
             }
 
-            //var search = from m in _context.Products select m;
+            var search = from m in _context.Products select m;
 
-            var search = from p in _context.Products
-                         join i in _context.Inventories on p.ProductId equals i.FkProductId
-                         select new { Product = p, Inventory = i };
+            //var search = from p in _context.Products
+            //             join i in _context.Inventories on p.ProductId equals i.FkProductId
+            //             select new { Product = p, Inventory = i };
 
             if (!String.IsNullOrEmpty(searchString))
             {
@@ -267,15 +267,14 @@ namespace SkoButik_Client.Controllers
                 {
                     // Search by name or description
                     search = search.Where(s =>
-                        s.Product.ProductName.Contains(terms[0]) ||
-                        s.Product.Description.Contains(terms[0]));
+                        s.ProductName.Contains(terms[0]) ||
+                        s.Description.Contains(terms[0]));
                 }
                 else if (terms.Length == 2)
                 {
                     // Search by name or description and size
                     search = search.Where(s =>
-                        (s.Product.ProductName.Contains(terms[0]) || s.Product.Description.Contains(terms[0])) &&
-                        s.Inventory.Sizes.SizeName.Contains(terms[1]));
+                        (s.ProductName.Contains(terms[0]) || s.Description.Contains(terms[0])));
                 }
             }
 
