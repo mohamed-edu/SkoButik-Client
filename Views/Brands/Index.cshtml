@@ -6,11 +6,13 @@
 
 <div style="text-align: center;">
 <h1>Brands</h1>
-
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class=" btn btn-success">Add Brand</a>
 </p>
-<table class="table">
+
+<div class="container">
+<div class="justify-content-center">
+<table class="table table-striped table-hover">
     <thead>
         <tr>
             <th>
@@ -26,12 +28,15 @@
                 @Html.DisplayFor(modelItem => item.BrandName)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.BrandId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.BrandId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.BrandId">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.BrandId" class=" btn btn-outline-primary">Edit</a> 
+                @* <a asp-action="Details" asp-route-id="@item.BrandId">Details</a>  *@
+                <a asp-action="Delete" asp-route-id="@item.BrandId" class="btn btn-outline-danger">Delete</a>
             </td>
         </tr>
 }
     </tbody>
 </table>
 </div>
+</div>
+</div>
+

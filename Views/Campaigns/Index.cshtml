@@ -4,25 +4,28 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
+<div style="text-align: center;">
+    <h1>Campaigns</h1>
+    <p>
+        <a asp-action="Create" class="btn btn-success">Add new Campaign</a>
+    </p>
+</div>
+<div class="container">
+<div class="justify-content-center">
+    <table class="table table-striped table-hover">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.CampaignName)
+                Campaign name
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CampaignAmount)
+                Discount in %
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.StartDate)
+                Starts
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.EndDate)
+                Ends
             </th>
             <th></th>
         </tr>
@@ -43,11 +46,13 @@
                 @Html.DisplayFor(modelItem => item.EndDate)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.CampaignId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.CampaignId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.CampaignId">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.CampaignId" class="btn btn-outline-info">Edit</a> 
+                <a asp-action="Details" asp-route-id="@item.CampaignId" class="btn btn-outline-primary">Details</a> 
+                <a asp-action="Delete" asp-route-id="@item.CampaignId" class="btn btn-outline-danger">Delete</a>
             </td>
         </tr>
 }
     </tbody>
 </table>
+</div>
+</div>
